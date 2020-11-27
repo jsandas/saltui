@@ -43,13 +43,32 @@ Or:
 ```
 
 # Dev
-Use the docker-compose_dev.yml docker compose file to bring up the dev environment.  Currently migrations
-have to be run manually update the contaiers are up.
+Use the dev-env.sh script to bring up the dev environment.  Currently db migrations
+have to be run manually after the containers are up.
 
+Start:
 ```bash
-docker-compose -f docker-compose_dev.yml exec saltui python manage.py migrate
+./dev-env start
 ```
-To populate data from test salt-minion
+
+Use cli in saltui container:
 ```bash
-docker-compose -f docker-compose_dev.yml exec saltui sh -c "update.sh all"
+./dev-env cmd
 ```
+
+Stop:
+```bash
+./dev-env stop
+```
+
+**Saltui commands:**
+Run database migration:
+```bash
+python manage.py migrate
+```
+
+To populate data from test salt-minions
+```bash
+./update.sh all
+```
+
