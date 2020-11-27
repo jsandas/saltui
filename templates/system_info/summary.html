@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="subHeaders">
+        System Info Overview</br>
+        Click on a host below for details</br>
+    </div>
+    <div>
+        <table class="Table">
+        <tr>
+            <th>Host</th>
+            <th>CPU Arch</th>
+            <th>Disk Free (MB)</th>
+            <th>Disk Total (MB)</th>
+            <th>Disk Used (MB)</th>
+            <th>Environment</th>
+            <th>IPv4</th>
+            <th>Memory (MB)</th>
+            <th>CPU</th>
+            <th>OS</th>
+            <th>OS Release</th>
+            <th>Role</th>
+            <th>SELinux</th>
+            <th>Server Category</th>
+            <th>Swap</th>
+            <th>Last Updated</th>
+        </tr>
+        {% for host in view.data.hosts %}
+        <tr>
+            <td>{{ host }}</td>
+            <td>{{ host.system_info.cpuarch }}</td>
+            <td>{{ host.system_info.disk_free }}</td>
+            <td>{{ host.system_info.disk_total }}</td>
+            <td>{{ host.system_info.disk_used }}</td>
+            <td>{{ host.system_info.env }}</td>
+            <td>{{ host.system_info.ipv4 }}</td>
+            <td>{{ host.system_info.mem_total }}</td>
+            <td>{{ host.system_info.num_cpus }}</td>
+            <td>{{ host.system_info.os }}</td>
+            <td>{{ host.system_info.osrelease }}</td>
+            <td>{{ host.system_info.role }}</td>
+            <td>{{ host.system_info.selinux }}</td>
+            <td>{{ host.system_info.server_category }}</td>
+            <td>{{ host.system_info.swap_total }}</td>
+            <td>{{ host.last_update }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+{% endblock %}

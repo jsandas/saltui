@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="subHeaders">
+        Packages Overview</br>
+        Click on a host or package below for details</br>
+        or select a list from the Packages dropdown above</br>
+    </div>
+    <div>
+        <table class="Table" style="width: 49%">
+        <tr>
+            <th>Host</th>
+            <th>Total Packages Installed</th>
+            <th>Total Updates Found</th>
+            <th>Last Updated</th>
+        </tr>
+        {% for host in view.data.hosts %}
+        <tr>
+            <td><a href="/packages/list_hosts/{{ host }}">{{ host }}</a></td>
+            <td>{{ host.total }}</td>
+            <td>{{ host.updates }}</td>
+            <td>{{ host.last_update }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <table class="Table" style="width: 49%">
+        <tr>
+            <th>Package</th>
+            <th>Total Installations</th>
+            <th>Total Updates Available</th>
+            <th>Last Updated</th>
+        </tr>
+        {% for package in view.data.packages %}
+        <tr>
+            <td><a href="/packages/list_packages/{{ package }}">{{ package }}</a></td>
+            <td>{{ package.total }}</td>
+            <td>{{ package.updates }}</td>
+            <td>{{ package.last_update }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+{% endblock %}

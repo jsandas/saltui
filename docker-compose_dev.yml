@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  saltui:
+    build:
+      context: .
+    image: saltui
+    # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
+    environment:
+      SALTUI_DB_HOST: 'localdb'
+      SALTUI_DB_USER: 'saltui_dev_user'
+      SALTUI_DB_PASS: 'testPassword'
+      SALT_API_HOST: 'https://salt-master:8000'
+      SALT_API_USER: 'salt'
+      SALT_API_PASS: 'testing123'
+      SALT_API_EAUTH: 'sharedsecret'
+    volumes:
+      - $PWD:/opt/saltui
+    ports:
+      - 8080:8080
+    command: ['wait-for', 'localdb:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8080']
+    restart: unless-stopped
+    links:
+      - postgres:localdb
+      - salt-master:salt-master
+  
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: 'saltui'
+      POSTGRES_PASSWORD: 'secretPassword'
+      POSTGRES_APP_USER: 'saltui_dev_user'
+      POSTGRES_APP_PASSWORD: 'testPassword'
+    volumes: 
+      - $PWD/data_files/data:/var/lib/postgresql/data
+      - $PWD/data_files/db-init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+
+  salt-master:
+    image: saltstack/salt:3001
+    container_name: salt-master
+    ports:
+      - "4505:4505"
+      - "4506:4506"
+      - "8000:8000"
+    environment: 
+      SALT_MASTER_CONFIG: '{"auto_accept": true, "log_level": " debug"}'
+      SALT_SHARED_SECRET: 'testing123'
+    volumes:
+      - $PWD/salt_modules:/srv/salt/_modules
+
+  salt-minion:
+    image: saltstack/salt:3001
+    container_name: salt-minion
+    environment: 
+      SALT_MINION_CONFIG: '{"id": "test.minion", "master": "salt-master", "log_level": " debug"}'
+    links:
+      - salt-master:salt-master

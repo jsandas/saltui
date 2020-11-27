@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="subHeaders">
+        Users and Hosts</br>
+        Click <a href="/users/list_users">here</a> to show hosts with each user</br>
+    </div>
+    {% for user in view.data.users %}
+    <div>
+        <table class="Table">
+        <tr>
+            <th>{{ user }}</th>
+            <th>Hosts: ({{ user.total }})</th>
+            <th>UID</th>
+            <th>GID</th>
+            <th>Home Folder</th>
+            <th>Groups</th>
+            <th>Last Login</th>
+            <th>Client IP</th>
+        </tr>
+        {% for host, data in user.hosts.items %}
+        <tr>
+            <td></td>
+            <td><a href="/users/list_hosts/{{ host }}">{{ host }}</a></td>
+            <td>{{ data.uid }}</td>
+            <td>{{ data.gid }}</td>
+            <td>{{ data.home }}</td>
+            <td>{{ data.groups }}</td>
+            <td>{{ data.last_login }}</td>
+            <td>{{ data.client_ip }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
+{% endblock %}

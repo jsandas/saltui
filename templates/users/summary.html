@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="subHeaders">
+        Users Overview</br>
+        Click on a host or user below for details</br>
+        or select a list from the Users dropdown above</br>
+    </div>
+    <div>
+        <table class="Table" style="width: 49%">
+        <tr>
+            <th>Host</th>
+            <th>Total Users</th>
+            <th>Updated</th>
+        </tr>
+        {% for host in view.data.hosts %}
+        <tr>
+            <td><a href="/users/list_hosts/{{ host.name }}">{{ host.name }}</a></td>
+            <td>{{ host.total }}</td>
+            <td>{{ host.last_update }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <table class="Table" style="width: 49%">
+        <tr>
+            <th>User</th>
+            <th>Total Hosts</th>
+            <th>Last Updated</th>
+        </tr>
+        {% for user in view.data.users %}
+        <tr>
+            <td><a href="/users/list_users/{{ user.name }}">{{ user.name }}</a></td>
+            <td>{{ user.total }}</td>
+            <td>{{ user.last_update }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        </div>
+    </div>
+{% endblock %}
