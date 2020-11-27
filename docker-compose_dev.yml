@@ -5,6 +5,7 @@ services:
     build:
       context: .
     image: saltui
+    container_name: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
     environment:
       SALTUI_DB_HOST: 'localdb'
