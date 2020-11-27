@@ -1,0 +1,109 @@
+table.Table {
+  border: 1px solid #333333;
+  background-color: #EEEEEE;
+  text-align: left;
+  border-collapse: collapse;
+  width: 99%;
+  float: left;
+  margin: 5px;
+}
+table.Table td, table.Table th {
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+table.Table tbody td {
+  font-size: 13px;
+  color: #333333;
+}
+table.Table tr:nth-child(even) {
+  background: #FFFFFF;
+}
+table.Table th {
+  background: #333333;
+  background: -moz-linear-gradient(top, #666666 0%, #474747 66%, #333333 100%);
+  background: -webkit-linear-gradient(top, #666666 0%, #474747 66%, #333333 100%);
+  background: linear-gradient(to bottom, #666666 0%, #474747 66%, #333333 100%);
+  border-bottom: 2px solid #444444;
+}
+table.Table th {
+  font-size: 15px;
+  font-weight: bold;
+  color: #FFFFFF;
+  border-left: 2px solid #BDBDBD;
+}
+table.Table thead th:first-child {
+  border-left: none;
+}
+
+table.Table tfoot {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #333333;
+  background: -moz-linear-gradient(top, #666666 0%, #474747 66%, #333333 100%);
+  background: -webkit-linear-gradient(top, #666666 0%, #474747 66%, #333333 100%);
+  background: linear-gradient(to bottom, #666666 0%, #474747 66%, #333333 100%);
+  border-top: 2px solid #444444;
+}
+table.Table tfoot td {
+  font-size: 14px;
+}
+table.Table tfoot .links {
+  text-align: right;
+}
+table.Table tfoot .links a{
+  display: inline-block;
+  background: #333333;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.subHeaders {
+  color: black;
+  text-align: center;
+  font-size: 16px;
+  font-family: Arial;
+  padding: 14px 16px;
+}
+
+button.Button {
+  background-color: #333333;
+  border: none;
+  color: white;
+  padding: 2px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+}
+
+inputBoxTitle {
+  color: black;
+  text-align: left;
+  font-size: 16px;
+  font-family: Arial;
+  padding: 4px 4px;
+}
+
+input[type=text] {
+  background-color: white;
+  border: 1px solid;
+  color: #333333;
+  padding: 2px 2px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+}
+
+input[type=submit] {
+  background-color: #333333;
+  border: none;
+  color: white;
+  padding: 2px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+}

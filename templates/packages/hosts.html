@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="subHeaders">
+        Current packages and available updates</br>
+        Click <a href="/packages/list_hosts">here</a> to show all servers</br>
+    </div>
+    {% for host in view.data.hosts %}
+        <div>
+            <table class="Table">
+            <tr>
+                <th>{{ host }}</th>
+                <th>Packages - Total: ({{ host.total }})</th>
+                <th>Version</th>
+                <th>Latest (Updates: {{ host.updates }})</th>
+            </tr>
+        {% for package, versions in host.packages.items|dictsort:0 %}
+            <tr>
+                <td></td>
+                <td><a href="/packages/list_packages/{{ package }}">{{ package }}</a></td>
+                <td>{{ versions.current }}</td>
+                <td>{{ versions.latest }}</td>
+            </tr>
+        {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,9 @@
+data_files
+Dockerfile
+docker-compose*.yml
+test-env
+.git*
+*.pyc
+*.swp
+.vscode/
+.DS*

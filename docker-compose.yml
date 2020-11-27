@@ -1,0 +1,68 @@
+version: '3.7'
+
+services:
+  saltui:
+    build:
+      context: .
+    image: saltui
+    # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
+    environment:
+      SALTUI_DB_HOST: 'localdb'
+      SALTUI_DB_USER: 'saltui_user'
+      SALTUI_DB_PASS: 'testPassword'
+      SALT_API_HOST: 'https://salt-master:8000'
+      SALT_API_USER: 'salt'
+      SALT_API_PASS: 'testing123'
+      SALT_API_EAUTH: 'sharedsecret'
+    networks:
+      - backend
+      - salt
+    ports:
+      - 8080:8080
+    # override command to wait for database to startup
+    command: ['wait-for', 'localdb:5432', '-t', '30', '--', '/opt/saltui/start.sh']
+    restart: unless-stopped
+    links:
+      - postgres:localdb
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.get-info.schedule: "@every 12h"
+      ofelia.job-exec.get-info.command: "/opt/saltui/update.sh all"
+      ofelia.job-exec.get-info.no-overlap: "true"
+  
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: 'saltui'
+      POSTGRES_PASSWORD: 'secretPassword'
+      POSTGRES_APP_USER: 'saltui_user'
+      POSTGRES_APP_PASSWORD: 'testPassword'
+    networks:
+      - backend
+    volumes: 
+      - $PWD/data_files/data:/var/lib/postgresql/data
+      - $PWD/data_files/db-init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - saltui
+    command: daemon --docker
+    networks:
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+#     labels:
+#       ofelia.job-local.my-test-job.schedule: "@every 5s"
+#       ofelia.job-local.my-test-job.command: "date"
+
+networks:
+  salt:
+    external:
+      name: salt_network
+  backend:
+    name: database
+    driver: bridge
