@@ -42,7 +42,8 @@ class Command(BaseCommand):
         client = salt_client()
 
         installed_packages = client.cmd(kwargs['target'], 'pkg.list_pkgs', tgt_type='compound', batch=5)
-        # package_upgrades = client.cmd(kwargs['target'], 'pkg.list_upgrades', kwarg={'enablerepo':'digicert,saltstack,mariadb,datastax-dse'},tgt_type='compound', batch=5)
+        # enablerepo is yum specific
+        # package_upgrades = client.cmd(kwargs['target'], 'pkg.list_upgrades', kwarg={'enablerepo':'saltstack,mariadb'},tgt_type='compound', batch=5)
         package_upgrades = client.cmd(kwargs['target'], 'pkg.list_upgrades', tgt_type='compound', batch=5)
 
         packages_list = {}
