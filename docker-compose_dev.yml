@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   salt-master:
-    image: saltstack/salt:3001
+    image: saltstack/salt:3002
     container_name: salt-master
     ports:
       - "4505:4505"
@@ -51,10 +51,37 @@ services:
     volumes:
       - $PWD/salt_modules:/srv/salt/_modules
 
-  salt-minion:
-    image: saltstack/salt:3001
-    container_name: salt-minion
+  salt-minion-alpine:
+    image: saltstack/salt:3002
+    container_name: salt-minion-alpine
     environment: 
-      SALT_MINION_CONFIG: '{"id": "test.minion", "master": "salt-master", "log_level": " debug"}'
+      SALT_MINION_CONFIG: '{"id": "test.minion.alpine", "master": "salt-master"}'
+    links:
+      - salt-master:salt-master
+
+  salt-minion-ubuntu2004:
+    image: ubuntu-saltstack:20.04
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-ubuntu2004
+    container_name: salt-minion-ubuntu2004
+    links:
+      - salt-master:salt-master
+
+  salt-minion-centos7:
+    image: centos-saltstack:7
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-centos7
+    container_name: salt-minion-centos7
+    links:
+      - salt-master:salt-master
+
+  salt-minion-centos8:
+    image: centos-saltstack:8
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-centos8
+    container_name: salt-minion-centos8
     links:
       - salt-master:salt-master

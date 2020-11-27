@@ -1,0 +1,25 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
+
+# http://bugs.python.org/issue19846
+# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+ENV LANGUAGE C.UTF-8
+
+RUN apt update \
+    && apt install -y wget gnupg
+
+RUN wget -O /tmp/key https://repo.saltstack.com/py3/ubuntu/20.04/amd64/latest/SALTSTACK-GPG-KEY.pub \
+    && apt-key add /tmp/key \
+    && echo "deb http://repo.saltstack.com/py3/ubuntu/20.04/amd64/latest focal main" \
+        > /etc/apt/sources.list.d/saltstack.list \
+    && apt update
+
+RUN apt install -y salt-minion \
+    && mkdir -p /etc/salt/minion.d \
+    && echo '{"id": "test.minion.ubuntu2004", "master": "salt-master"}' > /etc/salt/minion.d/minion.conf
+
+ENTRYPOINT ["/usr/bin/salt-minion"]
