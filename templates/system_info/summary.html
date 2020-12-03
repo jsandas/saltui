@@ -14,6 +14,8 @@
             <th>Disk Used (MB)</th>
             <th>Environment</th>
             <th>IPv4</th>
+            <th>Kernel</th>
+            <th>Kernel Release</th>
             <th>Memory (MB)</th>
             <th>CPU</th>
             <th>OS</th>
@@ -33,6 +35,8 @@
             <td>{{ host.system_info.disk_used }}</td>
             <td>{{ host.system_info.env }}</td>
             <td>{{ host.system_info.ipv4 }}</td>
+            <td>{{ host.system_info.kernel }}</td>
+            <td>{{ host.system_info.kernelrelease }}</td>
             <td>{{ host.system_info.mem_total }}</td>
             <td>{{ host.system_info.num_cpus }}</td>
             <td>{{ host.system_info.os }}</td>

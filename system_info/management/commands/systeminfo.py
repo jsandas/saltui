@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
         client = salt_client()
         system_grains = client.cmd(kwargs['target'], 'grains.item',
-                    ['cpuarch','env','ipv4','mem_total','num_cpus',
+                    ['cpuarch','env','ipv4','kernel','kernelrelease','mem_total','num_cpus',
                     'os','osmajorrelease','osrelease','osversion',
                     'role','selinux','server_category','swap_total'], tgt_type='compound', batch=5)
 
