@@ -4,7 +4,7 @@ from django.db import models
 class Host_Users(models.Model):
     name = models.CharField(max_length=200)
     total = models.IntegerField()
-    users = models.JSONField()
+    users = models.JSONField(default=dict)
     last_update = models.DateTimeField('date updated')
 
     class Meta:
@@ -16,7 +16,7 @@ class Host_Users(models.Model):
 class User_Hosts(models.Model):
     name = models.CharField(max_length=200)
     total = models.IntegerField()
-    hosts = models.JSONField()
+    hosts = models.JSONField(default=dict)
     last_update = models.DateTimeField('date updated')
 
     class Meta:
