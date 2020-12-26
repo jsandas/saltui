@@ -1,4 +1,5 @@
-import time
+import json
+
 from datetime import timedelta
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -37,8 +38,14 @@ class Command(BaseCommand):
             ts = timestamp - timedelta(settings.PURGE_OLDER_THAN)
             obj = Host_System_Info.objects.filter(last_update__lt=ts).delete()
 
+        self._get_grains(kwargs['target'], timestamp)
+
+        self._get_highstate(kwargs['target'], timestamp)
+
+
+    def _get_grains(self, target, timestamp):
         client = salt_client()
-        system_grains = client.cmd(kwargs['target'], 'grains.item',
+        system_grains = client.cmd(target, 'grains.item',
                     ['cpuarch','env','ipv4','kernel','kernelrelease','mem_total','num_cpus',
                     'os','osmajorrelease','osrelease','osversion',
                     'role','selinux','server_category','swap_total'], tgt_type='compound', batch=5)
@@ -65,9 +72,40 @@ class Command(BaseCommand):
 
                 obj, created = Host_System_Info.objects.update_or_create(name=host, 
                         defaults={'system_info': grains, 'last_update': timestamp})
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new host to system_info table'))
+
                 obj.save()
 
             self.stdout.write(self.style.SUCCESS('Updated system_info table'))
         except Exception as e:
             self.stdout.write(self.style.WARNING('Failed getting system information: ', e))
             self.stdout.write(self.style.WARNING('Grain data: {}'.format(system_grains))) 
+
+    def _get_highstate(self, target, timestamp):
+        client = salt_client()
+        highstate_return = client.cmd(target, 'state.apply',
+                    kwarg={'test': True}, tgt_type='compound', batch=2)
+        # print(json.dumps(highstate_return))
+
+        try:
+            for host, states in highstate_return.items():
+                status = True
+                missing_states = {}
+                for name, state in states.items():
+                    if state['result'] != True:
+                        status = False
+                        missing_states[name] = state['comment']
+
+                obj, created = Host_System_Info.objects.update_or_create(name=host, 
+                        defaults={'highstate_status': status, 'missing_hs_states': missing_states, 'last_update': timestamp})
+                
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new host to system_info table'))
+
+                obj.save()
+
+            self.stdout.write(self.style.SUCCESS('Updated highstate_info table'))
+        except Exception as e:
+            self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
+            self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return))) 
