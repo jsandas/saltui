@@ -24,6 +24,8 @@
             <th>SELinux</th>
             <th>Server Category</th>
             <th>Swap</th>
+            <th>Highstate Status</th>
+            <th>Missing HS States</th>
             <th>Last Updated</th>
         </tr>
         {% for host in view.data.hosts %}
@@ -45,6 +47,12 @@
             <td>{{ host.system_info.selinux }}</td>
             <td>{{ host.system_info.server_category }}</td>
             <td>{{ host.system_info.swap_total }}</td>
+            {% if host.highstate_status == False %}
+            <td class="red">{{ host.highstate_status }}</td> 
+            {% else %}
+            <td class="green"> {{ host.highstate_status }}</td>
+            {% endif %}
+            <td>{{ host.missing_hs_states }}</td>
             <td>{{ host.last_update }}</td>
         </tr>
         {% endfor %}

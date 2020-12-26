@@ -11,6 +11,12 @@ table.Table td, table.Table th {
   border: 1px solid #AAAAAA;
   padding: 3px 2px;
 }
+table.Table td.red {
+  color: #FF0000;
+}
+table.Table td.green {
+  color: #1ba822;
+}
 table.Table tbody td {
   font-size: 13px;
   color: #333333;
