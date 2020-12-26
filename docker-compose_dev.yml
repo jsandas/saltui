@@ -50,7 +50,7 @@ services:
       SALT_MASTER_CONFIG: '{"auto_accept": true, "log_level": " debug"}'
       SALT_SHARED_SECRET: 'testing123'
     volumes:
-      - $PWD/salt_modules:/srv/salt/_modules
+      - $PWD/srv:/srv
 
   salt-minion-alpine:
     image: saltstack/salt:3002

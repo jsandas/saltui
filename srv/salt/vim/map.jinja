@@ -1,0 +1,7 @@
+{% set pkg_name = salt['grains.filter_by']({
+    'CentOS': 'vim-enhanced',
+    'Gentoo': 'app-editors/vim',
+    'OpenBSD': 'vim--no_x11',
+    'RedHat': 'vim-enhanced',
+    'default': 'vim'
+}, grain='os', default='default') %}
