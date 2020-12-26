@@ -4,7 +4,7 @@ from django.db import models
 class Host_Packages(models.Model):
     name = models.CharField(max_length=200)
     total = models.IntegerField()
-    packages = models.JSONField()
+    packages = models.JSONField(default=dict)
     updates = models.IntegerField()
     last_update = models.DateTimeField('date updated')
 
@@ -17,7 +17,7 @@ class Host_Packages(models.Model):
 class Package_Hosts(models.Model):
     name = models.CharField(max_length=200)
     total = models.IntegerField()
-    hosts = models.JSONField()
+    hosts = models.JSONField(default=dict)
     updates = models.IntegerField()
     last_update = models.DateTimeField('date updated')
 
