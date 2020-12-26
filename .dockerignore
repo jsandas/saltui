@@ -1,4 +1,5 @@
 data_files
+srv
 Dockerfile
 docker-compose*.yml
 test-env

@@ -30,7 +30,7 @@ source .venv/bin/activate
 
 ##Collecting data from:
 Data is collected running the following commands.  These can be ran manually or using a scheduler such as cron or jenkins. 
-Note:: retrieving users information requires the `userinfo.py` module in the salt_modules folder to be added to the _modules folder of the salt file root (/srv/salt/_modules)
+Note:: retrieving users information requires the `userinfo.py` module from the /srv/salt/_modules folder to be added to the salt file root (/srv/salt/_modules)
 
 ```bash
 ./update.sh system
