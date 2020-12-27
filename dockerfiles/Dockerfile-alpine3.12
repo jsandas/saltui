@@ -1,0 +1,15 @@
+FROM alpine:3.12
+
+# http://bugs.python.org/issue19846
+# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+ENV LANGUAGE C.UTF-8
+
+RUN apk update
+
+RUN apk add salt-minion \
+    && mkdir -p /etc/salt/minion.d \
+    && echo '{"id": "test.minion.alpine3.12", "master": "salt-master"}' > /etc/salt/minion.d/minion.conf
+
+ENTRYPOINT ["/usr/bin/salt-minion"] 

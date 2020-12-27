@@ -52,11 +52,12 @@ services:
     volumes:
       - $PWD/srv:/srv
 
-  salt-minion-alpine:
-    image: saltstack/salt:3002
-    container_name: salt-minion-alpine
-    environment: 
-      SALT_MINION_CONFIG: '{"id": "test.minion.alpine", "master": "salt-master"}'
+  salt-minion-alpine3.12:
+    image: alpine-saltstack:3.12
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-alpine3.12
+    container_name: salt-minion-alpine3.12
     links:
       - salt-master:salt-master
 
