@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 obj, created = Host_System_Info.objects.update_or_create(name=host, 
                         defaults={'system_info': grains, 'last_update': timestamp})
                 if created:
-                    self.stdout.write(self.style.SUCCESS('Added new host to system_info table'))
+                    self.stdout.write(self.style.SUCCESS('Added new host {} to system_info table'.format(host)))
 
                 obj.save()
 
@@ -101,7 +101,8 @@ class Command(BaseCommand):
                         defaults={'highstate_status': status, 'missing_hs_states': missing_states, 'last_update': timestamp})
                 
                 if created:
-                    self.stdout.write(self.style.SUCCESS('Added new host to system_info table'))
+                    # shouldn't ever reach here because _get_grains() runs first
+                    self.stdout.write(self.style.SUCCESS('Added new host {} highstate to system_info table'.format(host)))
 
                 obj.save()
 

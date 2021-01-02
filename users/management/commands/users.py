@@ -101,6 +101,9 @@ class Command(BaseCommand):
                         defaults={'total': hosts_users['hosts'][host]['total'], 
                                 'users': hosts_users['hosts'][host]['users'], 
                                 'last_update': timestamp})
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new host {} to hosts users table'.format(host)))
+
                 obj.save()
 
             self.stdout.write(self.style.SUCCESS('Updated host users table'))
@@ -131,6 +134,10 @@ class Command(BaseCommand):
                     defaults={'total':users_hosts['users'][user]['total'], 
                             'hosts': users_hosts['users'][user]['hosts'], 
                             'last_update': timestamp})
+
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new user {} to user hosts table'.format(user)))
+
                 obj.save()
 
             self.stdout.write(self.style.SUCCESS('Updated user hosts table'))
