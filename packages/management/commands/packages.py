@@ -53,7 +53,7 @@ class Command(BaseCommand):
             for host, packages in installed_packages.items():
                 packages_list = {}
                 if not packages:
-                    self.stdout.write(self.style.WARN('No packages information for {}'.format(host)))
+                    self.stdout.write(self.style.WARNING('No packages information for {}'.format(host)))
                     packages_list['packages'] = {}
                     packages_list['total'] = 0
                     packages_list['updates'] = 0
@@ -80,6 +80,10 @@ class Command(BaseCommand):
                                 'packages': packages_list['packages'], 
                                 'updates': packages_list['updates'], 
                                 'last_update': timestamp})
+
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new host {} to host packages table'.format(host)))
+
                 obj.save()
 
             self.stdout.write(self.style.SUCCESS('Updated host packages table'))
@@ -124,6 +128,10 @@ class Command(BaseCommand):
                                 'hosts': data['hosts'], 
                                 'updates': data['updates'], 
                                 'last_update': timestamp})
+
+                if created:
+                    self.stdout.write(self.style.SUCCESS('Added new package to package hosts table'.format(package)))
+
                 obj.save()                   
 
             self.stdout.write(self.style.SUCCESS('Updated package hosts table'))
