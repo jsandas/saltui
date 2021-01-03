@@ -93,7 +93,8 @@ class Command(BaseCommand):
                 status = True
                 missing_states = {}
                 for name, state in states.items():
-                    if state['result'] != True:
+                    if not state['result']:
+                        self.stdout.write(self.style.WARNING('host {} not compliant with {}'.format(host, name)))
                         status = False
                         missing_states[name] = state['comment']
 
@@ -108,5 +109,5 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS('Updated highstate_info table'))
         except Exception as e:
-            self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
+            # self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
             self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return))) 
