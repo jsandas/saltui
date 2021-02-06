@@ -91,7 +91,6 @@ class Command(BaseCommand):
             for key in key_list:
                 highstate_return = client.cmd(key, 'state.apply',
                             kwarg={'test': True}, tgt_type='compound')
-                print(json.dumps(highstate_return))
                 try:
                     states = highstate_return[key]
                     status = True
