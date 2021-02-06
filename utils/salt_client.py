@@ -3,6 +3,7 @@ import requests
 try:
     import salt.config
     import salt.client
+    import salt.wheel
 except ImportError:
     pass
 
@@ -15,11 +16,17 @@ class local_client():
     def __init__(self):
         try:
             self.client = salt.client.LocalClient()
+            self.wheel = salt.wheel.WheelClient()
         except Exception as e:
-            print('salt package not found')
+            print('salt package not found: {}', e)
 
     def cmd(self, target, function, args=[], kwarg=None, **kwargs):
         ret = self.client.cmd(tgt=target, fun=function, arg=args, kwarg=kwarg, **kwargs)
+
+        return ret
+
+    def wheelcmd(self, function, args=[]):
+        ret = self.wheel.cmd(fun=function, arg=args)
 
         return ret
 
@@ -40,8 +47,6 @@ class api_client():
             'eauth': self.auth_type,
         }, verify=False)
 
-        print('logged in')
-
     def cmd(self, target, function, args=[], kwarg=None, **kwargs):
         resp = self.client.post(self.host, json=[{
             'client': 'local',
@@ -53,3 +58,12 @@ class api_client():
         }], verify=False)
 
         return resp.json()['return'][0]
+
+    def wheelcmd(self, function, args=[]):
+        resp = self.client.post(self.host, json=[{
+            'client': 'wheel',
+            'fun': function,
+            'match': args
+        }], verify=False)
+
+        return resp.json()['return'][0]['data']['return']
