@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     for _, data in disk_info[host].items():
                         if data['1K-blocks']:
                             grains['disk_total'] += int(int(data['1K-blocks']) / 1024)
-                        if data['used']:  
+                        if data['used']:
                             grains['disk_used'] += int(int(data['used']) / 1024)
                         if data['available']:
                             grains['disk_free'] += int(int(data['available']) / 1024)
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     grains = {}
                     hs_info = {}
 
-                results = {'system_info': grains, 
+                results = {'system_info': grains,
                             'highstate_status': hs_info['status'],
                             'missing_hs_states': hs_info['missing_states'],
                             'last_update': timestamp
@@ -85,17 +85,18 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Updated system_info table'))
         except Exception as e:
             self.stdout.write(self.style.WARNING('Failed getting system information: ', e))
-            self.stdout.write(self.style.WARNING('Grain data: {}'.format(system_grains))) 
+            self.stdout.write(self.style.WARNING('Grain data: {}'.format(system_grains)))
 
 
     def _get_highstate(self, target):
-        ret = {'status': None, 
+        ret = {'status': False,
                 'missing_states': {}
             }
         client = salt_client()
 
         highstate_return = client.cmd(target, 'state.apply',
                     kwarg={'test': True}, tgt_type='compound')
+
         try:
             states = highstate_return[target]
             status = True
@@ -109,7 +110,8 @@ class Command(BaseCommand):
             ret = {'status': status, 'missing_states': missing_states}
 
         except Exception as e:
-            self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
-            self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return))) 
+            #self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
+            self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return)))
+            ret['missing_states'] = {'error': highstate_return[target]}
 
         return ret
