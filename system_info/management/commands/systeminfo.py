@@ -38,12 +38,10 @@ class Command(BaseCommand):
             ts = timestamp - timedelta(settings.PURGE_OLDER_THAN)
             obj = Host_System_Info.objects.filter(last_update__lt=ts).delete()
 
-        self._get_grains(kwargs['target'], timestamp)
-
-        self._get_highstate()
+        self._get_info(kwargs['target'], timestamp)
 
 
-    def _get_grains(self, target, timestamp):
+    def _get_info(self, target, timestamp):
         client = salt_client()
         system_grains = client.cmd(target, 'grains.item',
                     ['cpuarch','env','ipv4','kernel','kernelrelease','mem_total','num_cpus',
@@ -52,7 +50,7 @@ class Command(BaseCommand):
 
         try:
             for host, grains in system_grains.items():
-                # grains will be false if the mininon did not respond
+                # grains will be false if the minion did not respond
                 if grains:
                     grains['disk_total'] = 0
                     grains['disk_used'] = 0
@@ -66,12 +64,19 @@ class Command(BaseCommand):
                             grains['disk_used'] += int(int(data['used']) / 1024)
                         if data['available']:
                             grains['disk_free'] += int(int(data['available']) / 1024)
+                    hs_info = self._get_highstate(host)
 
                 else:
                     grains = {}
+                    hs_info = {}
 
-                obj, created = Host_System_Info.objects.update_or_create(name=host, 
-                        defaults={'system_info': grains, 'last_update': timestamp})
+                results = {'system_info': grains, 
+                            'highstate_status': hs_info['status'],
+                            'missing_hs_states': hs_info['missing_states'],
+                            'last_update': timestamp
+                        }
+
+                obj, created = Host_System_Info.objects.update_or_create(name=host, defaults = (results))
                 if created:
                     self.stdout.write(self.style.SUCCESS('Added new host {} to system_info table'.format(host)))
 
@@ -83,34 +88,28 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('Grain data: {}'.format(system_grains))) 
 
 
-    def _get_highstate(self):
+    def _get_highstate(self, target):
+        ret = {'status': None, 
+                'missing_states': {}
+            }
         client = salt_client()
-        key_list = client.wheelcmd('key.list_all')['minions']
-        
-        if key_list:
-            for key in key_list:
-                highstate_return = client.cmd(key, 'state.apply',
-                            kwarg={'test': True}, tgt_type='compound')
-                try:
-                    states = highstate_return[key]
-                    status = True
-                    missing_states = {}
-                    for name, state in states.items():
-                        if not state['result']:
-                            self.stdout.write(self.style.WARNING('host {} not compliant with {}'.format(key, name)))
-                            status = False
-                            missing_states[name] = state['comment']
 
-                    obj, created = Host_System_Info.objects.update_or_create(name=key, 
-                            defaults={'highstate_status': status, 'missing_hs_states': missing_states})
-                    
-                    if created:
-                        # shouldn't ever reach here because _get_grains() runs first
-                        self.stdout.write(self.style.SUCCESS('Added new host {} highstate to system_info table'.format(key)))
+        highstate_return = client.cmd(target, 'state.apply',
+                    kwarg={'test': True}, tgt_type='compound')
+        try:
+            states = highstate_return[target]
+            status = True
+            missing_states = {}
+            for name, state in states.items():
+                if not state['result']:
+                    self.stdout.write(self.style.WARNING('host {} not compliant with {}'.format(target, name)))
+                    status = False
+                    missing_states[name] = state['comment']
 
-                    obj.save()
+            ret = {'status': status, 'missing_states': missing_states}
 
-                    self.stdout.write(self.style.SUCCESS('Updated highstate_info table'))
-                except Exception as e:
-                    self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
-                    self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return))) 
+        except Exception as e:
+            self.stdout.write(self.style.WARNING('Failed getting highstate information: ', e))
+            self.stdout.write(self.style.WARNING('Highstate data: {}'.format(highstate_return))) 
+
+        return ret
