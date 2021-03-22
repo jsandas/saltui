@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'okta_oauth2.apps.OktaOauth2Config',
     'packages.apps.PackagesConfig',
     'system_info.apps.SystemInfoConfig',
     'users.apps.UsersConfig',
@@ -39,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'okta_oauth2.middleware.OktaMiddleware',
 ]
 
 ROOT_URLCONF = 'saltui.urls'
@@ -96,8 +98,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/accounts/login'
-#LOGIN_REDIRECT_URL = 'packages/'
+AUTHENTICATION_BACKENDS = [
+    'okta_oauth2.backend.OktaBackend',
+]
+    # 'django.contrib.auth.backends.ModelBackend',
+
+LOGIN_URL = '/accounts/login/'
+# LOGIN_REDIRECT_URL = '/'
+
+OKTA_AUTH = {
+    "ORG_URL": "https://dev-65230814.okta.com/",
+    "ISSUER": "https://dev-65230814.okta.com/oauth2/default",
+    "CLIENT_ID": "0oacfdkg0XbUhwfGM5d6",
+    "CLIENT_SECRET": "Qet1SAlUFEcLnOeZDJGqDkVOz9_MieT8FE22nhqT",
+    "SCOPES": "openid profile email offline_access", # this is the default and can be omitted
+    "REDIRECT_URI": "http://localhost:8080/accounts/oauth2/callback/",
+    "LOGIN_REDIRECT_URL": "/", # default
+    "CACHE_PREFIX": "okta", # default
+    "CACHE_ALIAS": "default", # default
+    "PUBLIC_NAMED_URLS": (), # default
+    "PUBLIC_URLS": (), # default
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

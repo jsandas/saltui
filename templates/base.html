@@ -34,7 +34,15 @@
     </div>
   </div> 
   <a href="/system_info">System Info</a>
-</div>
+  <div class="dropdown">
+    <button class="dropbtn">{{ request.user.username }}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content" id="dropdownMenu">
+      <a href="/accounts/logout/">logout</a>
+    </div>
+  </div> 
+</div> 
 
 {% block content %}{% endblock %}
 </body>
