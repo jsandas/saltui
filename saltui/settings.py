@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'pby)@shnci#e-m!4na$3u@1&j055rv(#wa&8#13wb_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','.digicert.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
@@ -71,9 +71,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'saltui',
-        'USER': os.getenv('SALTUI_DB_USER', ''),
-        'PASSWORD': os.getenv('SALTUI_DB_PASS', ''),
-        'HOST': os.getenv('SALTUI_DB_HOST', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASS', ''),
+        'HOST': os.getenv('DB_HOST', ''),
         'PORT': '5432',
         'CONN_MAX_AGE': 120
     }
@@ -107,17 +107,17 @@ LOGIN_URL = '/accounts/login/'
 # LOGIN_REDIRECT_URL = '/'
 
 OKTA_AUTH = {
-    "ORG_URL": "https://dev-65230814.okta.com/",
-    "ISSUER": "https://dev-65230814.okta.com/oauth2/default",
-    "CLIENT_ID": "0oacfdkg0XbUhwfGM5d6",
-    "CLIENT_SECRET": "Qet1SAlUFEcLnOeZDJGqDkVOz9_MieT8FE22nhqT",
-    "SCOPES": "openid profile email offline_access", # this is the default and can be omitted
-    "REDIRECT_URI": "http://localhost:8080/accounts/oauth2/callback/",
-    "LOGIN_REDIRECT_URL": "/", # default
-    "CACHE_PREFIX": "okta", # default
-    "CACHE_ALIAS": "default", # default
-    "PUBLIC_NAMED_URLS": (), # default
-    "PUBLIC_URLS": (), # default
+    'ORG_URL': 'https://' + os.getenv('OKTA_DOMAIN', '') + '/',
+    'ISSUER': 'https://' + os.getenv('OKTA_DOMAIN', '') + '/oauth2/default',
+    'CLIENT_ID': os.getenv('OKTA_CLIENT_ID'),
+    'CLIENT_SECRET': os.getenv('OKTA_CLIENT_ID'),
+    'SCOPES': 'openid profile email offline_access', # this is the default and can be omitted
+    'REDIRECT_URI': os.getenv('APP_BASE_DOMAIN', 'http://localhost:8080') + '/accounts/oauth2/callback/',
+    'LOGIN_REDIRECT_URL': os.getenv('APP_BASE_DOMAIN', '/'),
+    'CACHE_PREFIX': 'okta', # default
+    'CACHE_ALIAS': 'default', # default
+    'PUBLIC_NAMED_URLS': (), # default
+    'PUBLIC_URLS': (), # default
 }
 
 # Internationalization
@@ -140,7 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # application specific settings
