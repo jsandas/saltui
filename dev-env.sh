@@ -17,12 +17,14 @@ saltui_docker_shell () {
 }	
 
 start () {	
-    $COMPOSE_COMMAND pull	
+    $COMPOSE_COMMAND pull
     $COMPOSE_COMMAND up -d	
 
     # sync salt files for the first time	
     sleep 10
     docker exec salt-master sh -c 'salt \* saltutil.sync_all' > /dev/null 2>&1
+
+    docker stop salt-minion-alpine3.12_down
 }	
 
 stop () {	
