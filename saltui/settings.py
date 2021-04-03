@@ -99,9 +99,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
     'okta_oauth2.backend.OktaBackend',
 ]
-    # 'django.contrib.auth.backends.ModelBackend',
 
 LOGIN_URL = '/accounts/login/'
 # LOGIN_REDIRECT_URL = '/'
@@ -111,7 +111,7 @@ OKTA_AUTH = {
     'ISSUER': 'https://' + os.getenv('OKTA_DOMAIN', '') + '/oauth2/default',
     'CLIENT_ID': os.getenv('OKTA_CLIENT_ID', ''),
     'CLIENT_SECRET': os.getenv('OKTA_CLIENT_SECRET', ''),
-    'SCOPES': 'openid profile email offline_access', # this is the default and can be omitted
+    'SCOPES': 'openid profile email groups offline_access', # this is the default and can be omitted
     'REDIRECT_URI': os.getenv('APP_BASE_DOMAIN', 'http://localhost:8080') + '/accounts/oauth2/callback/',
     'LOGIN_REDIRECT_URL': os.getenv('APP_BASE_DOMAIN', '/'),
     'CACHE_PREFIX': 'okta', # default
@@ -119,8 +119,8 @@ OKTA_AUTH = {
     'PUBLIC_NAMED_URLS': (), # list or tuple of URL names that should be accessible without tokens
     'PUBLIC_URLS': (), # list or tuple of URL regular expressions that should be accessible without tokens
     'MANAGE_GROUPS': False, # if true the authentication backend will manage django groups for you; include groups in scopes if true
-    'STAFF_GROUP': '', # members of this group will have the django is_staff user flags set
-    'SUPERUSER_GROUP': '', # members of this group will have the django is_superuser user flags set.
+    'STAFF_GROUP': 'admin', # members of this group will have the django is_staff user flags set
+    'SUPERUSER_GROUP': 'admin', # members of this group will have the django is_superuser user flags set.
 }
 
 # Internationalization
