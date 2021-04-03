@@ -8,8 +8,9 @@ ENV LANGUAGE C.UTF-8
 
 RUN yum install -y https://repo.saltstack.com/py3/redhat/salt-py3-repo-3000.el8.noarch.rpm
 
-RUN yum install -y salt-minion \
-    && mkdir -p /etc/salt/minion.d \
-    && echo '{"id": "test.minion.centos8", "master": "salt-master"}' > /etc/salt/minion.d/minion.conf
+RUN yum install -y salt-minion
+
+RUN mkdir -p /etc/salt/minion.d \
+    && echo '{"master": "salt-master"}' > /etc/salt/minion.d/minion.conf
 
 ENTRYPOINT ["/usr/bin/salt-minion"]
