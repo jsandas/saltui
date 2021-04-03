@@ -69,10 +69,10 @@ services:
       - salt-master:salt-master
 
   salt-minion-alpine3.12_down:
-    image: alpine-saltstack:3.12
+    image: alpine-saltstack:3.12_down
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile-alpine3.12
+      dockerfile: dockerfiles/Dockerfile-alpine3.12_down
     container_name: salt-minion-alpine3.12_down
     links:
       - salt-master:salt-master
