@@ -59,47 +59,62 @@ services:
     volumes:
       - $PWD/srv:/srv
 
-  salt-minion-alpine3.12:
+  # this is to simulate an unresponsive minion
+  down-minion:
+    image: saltstack/salt:3002
+    container_name: down-minion
+    environment:
+      SALT_MINION_CONFIG: '{"master": "salt-master"}'
+    hostname: down-minion
+    links:
+      - salt-master:salt-master
+
+  alpine3.12-minion:
     image: alpine-saltstack:3.12
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-alpine3.12
-    container_name: salt-minion-alpine3.12
+    container_name: alpine3.12-minion
+    hostname: alpine3.12-minion
     links:
       - salt-master:salt-master
 
-  salt-minion-alpine3.12_down:
-    image: alpine-saltstack:3.12_down
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-alpine3.12_down
-    container_name: salt-minion-alpine3.12_down
-    links:
-      - salt-master:salt-master
-
-  salt-minion-ubuntu2004:
+  ubuntu2004-minion:
     image: ubuntu-saltstack:20.04
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-ubuntu2004
-    container_name: salt-minion-ubuntu2004
+    container_name: ubuntu2004-minion
+    hostname: ubuntu2004-minion
     links:
       - salt-master:salt-master
 
-  salt-minion-centos7:
+  centos7-minion:
     image: centos-saltstack:7
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-centos7
-    container_name: salt-minion-centos7
+    container_name: centos7-minion
+    hostname: centos7-minion
     links:
       - salt-master:salt-master
 
-  salt-minion-centos8:
+  centos8-minion:
     image: centos-saltstack:8
     build:
       context: .
       dockerfile: dockerfiles/Dockerfile-centos8
-    container_name: salt-minion-centos8
+    container_name: centos8-minion
+    hostname: centos8-minion
+    links:
+      - salt-master:salt-master
+
+  opensuseleap15.3-minion:
+    image: opensuseleap-saltstack:15.3
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-opensuseleap15.3
+    container_name: opensuseleap15.3-minion
+    hostname: opensuseleap15.3-minion
     links:
       - salt-master:salt-master

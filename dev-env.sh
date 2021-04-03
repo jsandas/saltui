@@ -24,7 +24,7 @@ start () {
     sleep 10
     docker exec salt-master sh -c 'salt \* saltutil.sync_all' > /dev/null 2>&1
 
-    docker stop salt-minion-alpine3.12_down
+    docker stop down-minion
 }	
 
 stop () {	
