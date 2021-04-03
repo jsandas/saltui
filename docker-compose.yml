@@ -7,13 +7,15 @@ services:
     image: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
     environment:
-      SALTUI_DB_HOST: 'localdb'
-      SALTUI_DB_USER: 'saltui_user'
-      SALTUI_DB_PASS: 'testPassword'
-      SALT_API_HOST: 'https://salt-master:8000'
-      SALT_API_USER: 'salt'
-      SALT_API_PASS: 'testing123'
-      SALT_API_EAUTH: 'sharedsecret'
+      ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
+      APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
+      DB_HOST: ${SALTUI_DB_HOST}
+      DB_PASS: ${SALTUI_DB_PASS}
+      DB_USER: ${SALTUI_DB_USER}
+      SALT_API_HOST: ${SALTUI_SALT_API_HOST}
+      SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
+      SALT_API_PASS: ${SALTUI_SALT_API_PASS}
+      SALT_API_USER: ${SALTUI_SALT_API_USER}
     networks:
       - backend
       - salt
@@ -33,10 +35,10 @@ services:
   postgres:
     image: postgres:13-alpine
     environment:
-      POSTGRES_DB: 'saltui'
-      POSTGRES_PASSWORD: 'secretPassword'
-      POSTGRES_APP_USER: 'saltui_user'
-      POSTGRES_APP_PASSWORD: 'testPassword'
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
     networks:
       - backend
     volumes: 
