@@ -69,9 +69,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'saltui',
-        'USER': os.getenv('SALTUI_DB_USER', ''),
-        'PASSWORD': os.getenv('SALTUI_DB_PASS', ''),
-        'HOST': os.getenv('SALTUI_DB_HOST', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASS', ''),
+        'HOST': os.getenv('DB_HOST', ''),
         'PORT': '5432',
         'CONN_MAX_AGE': 120
     }
@@ -124,7 +124,7 @@ STATICFILES_DIRS = [
 
 # application specific settings
 # options: api or local
-SALT_CLIENT = os.getenv('SALTUI_SALT_CLIENT', 'api')
+SALT_CLIENT = os.getenv('SALT_CLIENT', 'api')
 
 SALT_API_HOST = os.getenv('SALT_API_HOST', 'https://localhost:8000')
 SALT_API_USER = os.getenv('SALT_API_USER', 'salt')
