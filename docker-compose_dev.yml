@@ -65,6 +65,15 @@ services:
     links:
       - salt-master:salt-master
 
+  bad-minion:
+    image: saltstack/salt:3002
+    container_name: bad-minion
+    environment:
+      SALT_MINION_CONFIG: '{"master": "salt-master"}'
+    hostname: bad-minion
+    links:
+      - salt-master:salt-master
+
   alpine3.12-minion:
     image: alpine-saltstack:3.12
     build:

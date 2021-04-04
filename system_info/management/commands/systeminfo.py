@@ -56,13 +56,17 @@ class Command(BaseCommand):
                 grains['disk_free'] = 0
 
                 disk_info = client.cmd(host, 'disk.usage', tgt_type='compound')
-                for _, data in disk_info[host].items():
-                    if data['1K-blocks']:
-                        grains['disk_total'] += int(int(data['1K-blocks']) / 1024)
-                    if data['used']:
-                        grains['disk_used'] += int(int(data['used']) / 1024)
-                    if data['available']:
-                        grains['disk_free'] += int(int(data['available']) / 1024)
+                try:
+                    for _, data in disk_info[host].items():
+                        if data['1K-blocks']:
+                            grains['disk_total'] += int(int(data['1K-blocks']) / 1024)
+                        if data['used']:
+                            grains['disk_used'] += int(int(data['used']) / 1024)
+                        if data['available']:
+                            grains['disk_free'] += int(int(data['available']) / 1024)
+                except:
+                    self.stdout.write(self.style.ERROR('host {} bad disk.usage return: {}'.format(target, disk_info[host])))
+                
                 hs_info = self._get_highstate(host)
 
             else:
@@ -79,7 +83,7 @@ class Command(BaseCommand):
 
             obj, created = Host_System_Info.objects.update_or_create(name=host, defaults = (results))
             if created:
-                self.stdout.write(self.style.SUCCESS('Added new host {} to system_info table'.format(host)))
+                self.stdout.write(self.style.SUCCESS('Added new host "{}" to system_info table'.format(host)))
 
             obj.save()
 
@@ -87,7 +91,7 @@ class Command(BaseCommand):
 
 
     def _get_highstate(self, target):
-        ret = {'status': True,
+        ret = {'status': False,
                 'missing_states': {}
             }
 
@@ -100,15 +104,16 @@ class Command(BaseCommand):
 
         if states:
             missing_states = {}
-            for name, state in states.items():
-                if not state['result']:
-                    self.stdout.write(self.style.WARNING('host {} not compliant with {}'.format(target, name)))
-                    status = False
-                    missing_states[name] = state['comment']
-            
-            if missing_states:
-                ret = {'status': status, 'missing_states': missing_states}
-        else:
-            ret['status'] = False
-
+            try:
+                for name, state in states.items():
+                    if not state['result']:
+                        self.stdout.write(self.style.WARNING('host {} not compliant with {}'.format(target, name)))
+                        missing_states[name] = state['comment']
+                
+                if missing_states:
+                    ret['missing_states'] = missing_states
+                else:
+                    ret['status'] = True
+            except:
+                self.stdout.write(self.style.ERROR('host {} bad highstate return: {}'.format(target, states)))
         return ret
