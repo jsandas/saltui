@@ -4,7 +4,7 @@ WORKDIR /opt/saltui
 
 ADD ./ /opt/saltui
 
-RUN apk add --no-cache --virtual .build-deps build-base linux-headers postgresql-dev \
+RUN apk add --no-cache --virtual .build-deps build-base libffi-dev rust cargo openssl-dev postgresql-dev \
     && pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps \
     && apk add --no-cache libpq \
