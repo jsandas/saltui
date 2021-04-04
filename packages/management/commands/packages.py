@@ -49,93 +49,83 @@ class Command(BaseCommand):
         packages_list = {}
         packages_list['hosts'] = {}
 
-        try:
-            for host, packages in installed_packages.items():
-                packages_list = {}
-                if not packages:
-                    self.stdout.write(self.style.WARNING('No packages information for {}'.format(host)))
-                    packages_list['packages'] = {}
-                    packages_list['total'] = 0
-                    packages_list['updates'] = 0
+        for host, packages in installed_packages.items():
+            packages_list = {}
+            if not packages:
+                self.stdout.write(self.style.WARNING('No packages information for {}'.format(host)))
+                packages_list['packages'] = {}
+                packages_list['total'] = 0
+                packages_list['updates'] = 0
 
-                if packages:
-                    packages_list['packages'] = {}
-                    packages_list['total'] = 0
-                    packages_list['updates'] = 0
-                    for package, version in packages.items():
-                        packages_list['total'] += 1
-                        packages_list['packages'][package] = {}
-                        if package in package_upgrades[host]:
-                            new_version = package_upgrades[host][package]
-                            packages_list['packages'][package]['current'] = version
-                            packages_list['packages'][package]['latest'] = new_version
-                            packages_list['updates'] += 1
-                        else:
-                            packages_list['packages'][package]['current'] = version
-                            packages_list['packages'][package]['latest'] = 'N/A'
+            if packages:
+                packages_list['packages'] = {}
+                packages_list['total'] = 0
+                packages_list['updates'] = 0
+                for package, version in packages.items():
+                    packages_list['total'] += 1
+                    packages_list['packages'][package] = {}
+                    if package in package_upgrades[host]:
+                        new_version = package_upgrades[host][package]
+                        packages_list['packages'][package]['current'] = version
+                        packages_list['packages'][package]['latest'] = new_version
+                        packages_list['updates'] += 1
+                    else:
+                        packages_list['packages'][package]['current'] = version
+                        packages_list['packages'][package]['latest'] = 'N/A'
 
 
-                obj, created = Host_Packages.objects.update_or_create(name=host, 
-                        defaults={'total': packages_list['total'], 
-                                'packages': packages_list['packages'], 
-                                'updates': packages_list['updates'], 
-                                'last_update': timestamp})
+            obj, created = Host_Packages.objects.update_or_create(name=host, 
+                    defaults={'total': packages_list['total'], 
+                            'packages': packages_list['packages'], 
+                            'updates': packages_list['updates'], 
+                            'last_update': timestamp})
 
-                if created:
-                    self.stdout.write(self.style.SUCCESS('Added new host {} to host packages table'.format(host)))
+            if created:
+                self.stdout.write(self.style.SUCCESS('Added new host {} to host_packages table'.format(host)))
 
-                obj.save()
+            obj.save()
 
-            self.stdout.write(self.style.SUCCESS('Updated host packages table'))
-        except Exception as e:
-            self.stdout.write(self.style.WARNING('Failed getting package information: ', e))
-            self.stdout.write(self.style.WARNING('package data: {}'.format(installed_packages)))
-            self.stdout.write(self.style.WARNING('update data: {}'.format(package_upgrades)))
+        self.stdout.write(self.style.SUCCESS('Finished updating host_packages table'))
 
         temp_package_list = {}
-        try:
+        for host, packages in installed_packages.items():
+            if packages == False:
+                continue
+
+            for package, version in packages.items():
+                temp_package_list[package] = {}
+                temp_package_list[package]['hosts'] = {} 
+                temp_package_list[package]['total'] = 0
+                temp_package_list[package]['updates'] = 0
+            
+        for pkg in temp_package_list:
             for host, packages in installed_packages.items():
                 if packages == False:
                     continue
-
                 for package, version in packages.items():
-                    temp_package_list[package] = {}
-                    temp_package_list[package]['hosts'] = {} 
-                    temp_package_list[package]['total'] = 0
-                    temp_package_list[package]['updates'] = 0
-                
-            for pkg in temp_package_list:
-                for host, packages in installed_packages.items():
-                    if packages == False:
-                        continue
-                    for package, version in packages.items():
-                        if pkg == package:
-                            temp_package_list[package]['hosts'][host] = {}
-                            temp_package_list[package]['total'] += 1
-                            if package in package_upgrades[host]:
-                                new_version = package_upgrades[host][package]
-                                temp_package_list[package]['hosts'][host]['current'] = version
-                                temp_package_list[package]['hosts'][host]['latest'] = new_version
-                                temp_package_list[package]['updates'] += 1
-                            else:
-                                temp_package_list[package]['hosts'][host]['current'] = version
-                                temp_package_list[package]['hosts'][host]['latest'] = 'N/A'
+                    if pkg == package:
+                        temp_package_list[package]['hosts'][host] = {}
+                        temp_package_list[package]['total'] += 1
+                        if package in package_upgrades[host]:
+                            new_version = package_upgrades[host][package]
+                            temp_package_list[package]['hosts'][host]['current'] = version
+                            temp_package_list[package]['hosts'][host]['latest'] = new_version
+                            temp_package_list[package]['updates'] += 1
+                        else:
+                            temp_package_list[package]['hosts'][host]['current'] = version
+                            temp_package_list[package]['hosts'][host]['latest'] = 'N/A'
 
 
-            for package, data in temp_package_list.items():
-                obj, created = Package_Hosts.objects.update_or_create(name=package, 
-                        defaults={'total': data['total'], 
-                                'hosts': data['hosts'], 
-                                'updates': data['updates'], 
-                                'last_update': timestamp})
+        for package, data in temp_package_list.items():
+            obj, created = Package_Hosts.objects.update_or_create(name=package, 
+                    defaults={'total': data['total'], 
+                            'hosts': data['hosts'], 
+                            'updates': data['updates'], 
+                            'last_update': timestamp})
 
-                if created:
-                    self.stdout.write(self.style.SUCCESS('Added new package to package hosts table'.format(package)))
+            if created:
+                self.stdout.write(self.style.SUCCESS('Added new package to package_hosts table'.format(package)))
 
-                obj.save()                   
+            obj.save()                   
 
-            self.stdout.write(self.style.SUCCESS('Updated package hosts table'))
-        except Exception as e:
-            self.stdout.write(self.style.WARNING('Failed getting package information: ', e))
-            self.stdout.write(self.style.WARNING('package data: {}'.format(installed_packages)))
-            self.stdout.write(self.style.WARNING('update data: {}'.format(package_upgrades)))
+        self.stdout.write(self.style.SUCCESS('Finished updating package_hosts table'))

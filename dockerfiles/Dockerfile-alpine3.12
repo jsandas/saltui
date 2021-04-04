@@ -8,8 +8,9 @@ ENV LANGUAGE C.UTF-8
 
 RUN apk update
 
-RUN apk add salt-minion \
-    && mkdir -p /etc/salt/minion.d \
-    && echo '{"id": "test.minion.alpine3.12", "master": "salt-master"}' > /etc/salt/minion.d/minion.conf
+RUN apk add salt-minion
+
+RUN mkdir -p /etc/salt/minion.d \
+    && echo '{"master": "salt-master"}' > /etc/salt/minion.d/minion.conf
 
 ENTRYPOINT ["/usr/bin/salt-minion"] 

@@ -148,7 +148,7 @@ STATICFILES_DIRS = [
 
 # application specific settings
 # options: api or local
-SALT_CLIENT = os.getenv('SALTUI_SALT_CLIENT', 'api')
+SALT_CLIENT = os.getenv('SALT_CLIENT', 'api')
 
 SALT_API_HOST = os.getenv('SALT_API_HOST', 'https://localhost:8000')
 SALT_API_USER = os.getenv('SALT_API_USER', 'salt')

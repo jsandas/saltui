@@ -20,6 +20,6 @@ RUN wget -O /tmp/key https://repo.saltstack.com/py3/ubuntu/20.04/amd64/latest/SA
 
 RUN apt install -y salt-minion \
     && mkdir -p /etc/salt/minion.d \
-    && echo '{"id": "test.minion.ubuntu2004", "master": "salt-master"}' > /etc/salt/minion.d/minion.conf
+    && echo '{"master": "salt-master"}' > /etc/salt/minion.d/minion.conf
 
 ENTRYPOINT ["/usr/bin/salt-minion"]

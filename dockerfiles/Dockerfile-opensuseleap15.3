@@ -1,6 +1,4 @@
-FROM centos:7
-
-# This uses the lastest 3000 of release since Centos 7 and python 3 is limited
+FROM opensuse/leap:15.3
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
@@ -8,9 +6,9 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 
-RUN yum install -y https://repo.saltstack.com/yum/redhat/salt-repo-3000.el7.noarch.rpm
+RUN zypper refresh
 
-RUN yum install -y salt-minion
+RUN zypper install -y salt-minion
 
 RUN mkdir -p /etc/salt/minion.d \
     && echo '{"master": "salt-master"}' > /etc/salt/minion.d/minion.conf

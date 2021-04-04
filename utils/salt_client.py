@@ -26,6 +26,11 @@ class local_client():
         return ret
 
     def wheelcmd(self, function, args=[]):
+        '''
+        wheelcmd is used for accessing the wheel module
+        unfortunately this is buggy and does not work properly
+        in all situations
+        '''
         ret = self.wheel.cmd(fun=function, arg=args)
 
         return ret
@@ -60,6 +65,11 @@ class api_client():
         return resp.json()['return'][0]
 
     def wheelcmd(self, function, args=[]):
+        '''
+        wheelcmd is used for accessing the wheel module
+        unfortunately this is buggy and does not work properly
+        in all situations
+        '''
         resp = self.client.post(self.host, json=[{
             'client': 'wheel',
             'fun': function,
