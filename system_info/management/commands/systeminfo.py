@@ -65,7 +65,7 @@ class Command(BaseCommand):
                         if data['available']:
                             grains['disk_free'] += int(int(data['available']) / 1024)
                 except:
-                    self.stdout.write(self.style.ERROR('host {} bad disk.usage return: {}'.format(target, disk_info[host])))
+                    self.stdout.write(self.style.ERROR('host {} bad disk.usage return: {}'.format(host, disk_info)))
                 
                 hs_info = self._get_highstate(host)
 
