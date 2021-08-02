@@ -42,7 +42,7 @@ class Command(BaseCommand):
         client = salt_client()
 
         user_data = client.cmd(kwargs['target'], 'user.getent',tgt_type='compound', batch=5)
-        lastlog_data = client.cmd(kwargs['target'], 'userinfo.lastlog',tgt_type='compound', batch=5)
+        # lastlog_data = client.cmd(kwargs['target'], 'userinfo.lastlog',tgt_type='compound', batch=5)
 
         missing_lastlog = False
         hosts_users = {}
@@ -55,11 +55,11 @@ class Command(BaseCommand):
             hosts_users['hosts'][host]['users'] = {}
             count = 0
         
-            lastlog_errors = ['Unsupported OS', 'Unable to find or open the file: /var/log/lastlog', "'userinfo.lastlog' is not available."]
-            if lastlog_data[host] in lastlog_errors:
-                missing_lastlog = True
-                fix_command = ' salt {} saltutil.sync_modules'.format(host)
-                self.stdout.write(self.style.WARNING('Lastlog information not available on minion {} error: {}'.format(host, lastlog_data[host])))
+            # lastlog_errors = ['Unsupported OS', 'Unable to find or open the file: /var/log/lastlog', "'userinfo.lastlog' is not available."]
+            # if lastlog_data[host] in lastlog_errors:
+            #     missing_lastlog = True
+            #     fix_command = ' salt {} saltutil.sync_modules'.format(host)
+            #     self.stdout.write(self.style.WARNING('Lastlog information not available on minion {} error: {}'.format(host, lastlog_data[host])))
             if users:
                 for user in users:
                     count += 1
@@ -81,16 +81,18 @@ class Command(BaseCommand):
                     hosts_users['hosts'][host]['users'][name]['shell'] = user['shell']
                     hosts_users['hosts'][host]['total'] = count
 
-                    if missing_lastlog:
-                        hosts_users['hosts'][host]['users'][name]['last_login'] = 'not available'
-                        hosts_users['hosts'][host]['users'][name]['client_ip'] = 'not available'
-                    elif lastlog_data[host]['users'][name]:
-                        hosts_users['hosts'][host]['users'][name]['last_login'] = lastlog_data[host]['users'][name]['last_login']
-                        hosts_users['hosts'][host]['users'][name]['client_ip'] = lastlog_data[host]['users'][name]['client_ip']
-                    else:
-                        message = 'User {} not found in lastlog on {}'.format(name, host)
-                        hosts_users['hosts'][host]['users'][name]['last_login'] = 'User not in lastlog'
-                        hosts_users['hosts'][host]['users'][name]['client_ip'] = 'User not in lastlog'
+                    hosts_users['hosts'][host]['users'][name]['last_login'] = 'not available'
+                    hosts_users['hosts'][host]['users'][name]['client_ip'] = 'not available'
+                    # if missing_lastlog:
+                    #     hosts_users['hosts'][host]['users'][name]['last_login'] = 'not available'
+                    #     hosts_users['hosts'][host]['users'][name]['client_ip'] = 'not available'
+                    # elif lastlog_data[host]['users'][name]:
+                    #     hosts_users['hosts'][host]['users'][name]['last_login'] = lastlog_data[host]['users'][name]['last_login']
+                    #     hosts_users['hosts'][host]['users'][name]['client_ip'] = lastlog_data[host]['users'][name]['client_ip']
+                    # else:
+                    #     message = 'User {} not found in lastlog on {}'.format(name, host)
+                    #     hosts_users['hosts'][host]['users'][name]['last_login'] = 'User not in lastlog'
+                    #     hosts_users['hosts'][host]['users'][name]['client_ip'] = 'User not in lastlog'
             else:
                 self.stdout.write(self.style.WARNING('No user information for {}'.format(host)))
                 hosts_users['hosts'][host]['users'] = {}
