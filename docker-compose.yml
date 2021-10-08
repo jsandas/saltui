@@ -6,26 +6,27 @@ services:
       context: .
     image: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
-    environment:
-      ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
-      APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
-      DB_HOST: ${SALTUI_DB_HOST}
-      DB_PASS: ${SALTUI_DB_PASS}
-      DB_USER: ${SALTUI_DB_USER}
-      SALT_API_HOST: ${SALTUI_SALT_API_HOST}
-      SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
-      SALT_API_PASS: ${SALTUI_SALT_API_PASS}
-      SALT_API_USER: ${SALTUI_SALT_API_USER}
+    env_file: .env.saltui
+    # environment:
+    #   SALTUI_ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
+    #   SALTUI_APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
+    #   SALTUI_DB_HOST: ${SALTUI_DB_HOST}
+    #   SALTUI_DB_PASS: ${SALTUI_DB_PASS}
+    #   SALTUI_DB_USER: ${SALTUI_DB_USER}
+    #   SALTUI_SALT_API_HOST: ${SALTUI_SALT_API_HOST}
+    #   SALTUI_SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
+    #   SALTUI_SALT_API_PASS: ${SALTUI_SALT_API_PASS}
+    #   SALTUI_SALT_API_USER: ${SALTUI_SALT_API_USER}
     networks:
       - backend
       - salt
     ports:
       - 8080:8080
     # override command to wait for database to startup
-    command: ['wait-for', 'localdb:5432', '-t', '30', '--', '/opt/saltui/start.sh']
+    command: ['wait-for', 'postgres:5432', '-t', '30', '--', '/opt/saltui/start.sh']
     restart: unless-stopped
-    links:
-      - postgres:localdb
+    depends_on:
+      - postgres
     labels:
       ofelia.enabled: "true"
       ofelia.job-exec.get-info.schedule: "@every 24h"
@@ -34,11 +35,12 @@ services:
   
   postgres:
     image: postgres:13-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_APP_USER: ${POSTGRES_APP_USER}
-      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
+    env_file: .env.postgres
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    #   POSTGRES_APP_USER: ${POSTGRES_APP_USER}
+    #   POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
     networks:
       - backend
     volumes: 
