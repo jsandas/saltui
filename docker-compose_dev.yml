@@ -7,33 +7,34 @@ services:
     image: saltui
     container_name: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
-    environment:
-      ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
-      APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
-      DB_HOST: ${SALTUI_DB_HOST}
-      DB_PASS: ${SALTUI_DB_PASS}
-      DB_USER: ${SALTUI_DB_USER}
-      SALT_API_HOST: ${SALTUI_SALT_API_HOST}
-      SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
-      SALT_API_PASS: ${SALTUI_SALT_API_PASS}
-      SALT_API_USER: ${SALTUI_SALT_API_USER}
+    env_file: .env.saltui
+    # environment:
+    #   SALTUI_ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
+    #   SALTUI_APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
+    #   SALTUI_DB_HOST: ${SALTUI_DB_HOST}
+    #   SALTUI_DB_PASS: ${SALTUI_DB_PASS}
+    #   SALTUI_DB_USER: ${SALTUI_DB_USER}
+    #   SALTUI_SALT_API_HOST: ${SALTUI_SALT_API_HOST}
+    #   SALTUI_SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
+    #   SALTUI_SALT_API_PASS: ${SALTUI_SALT_API_PASS}
+    #   SALTUI_SALT_API_USER: ${SALTUI_SALT_API_USER}
     volumes:
       - $PWD:/opt/saltui
     ports:
       - 8080:8080
-    command: ['wait-for', 'localdb:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8080']
+    command: ['wait-for', 'postgres:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8080']
     restart: unless-stopped
-    links:
-      - postgres:localdb
-      - salt-master:salt-master
+    depends_on:
+      - postgres
   
   postgres:
     image: postgres:13-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_APP_USER: ${POSTGRES_APP_USER}
-      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
+    env_file: .env.postgres
+    # environment:
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    #   POSTGRES_APP_USER: ${POSTGRES_APP_USER}
+    #   POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
     volumes: 
       - $PWD/data_files/data:/var/lib/postgresql/data
       - $PWD/data_files/db-init-scripts:/docker-entrypoint-initdb.d
@@ -42,7 +43,7 @@ services:
     restart: unless-stopped
 
   salt-master:
-    image: saltstack/salt:3002
+    image: saltstack/salt:3003
     container_name: salt-master
     ports:
       - "4505:4505"
@@ -57,22 +58,24 @@ services:
 
   # this is to simulate an unresponsive minion
   down-minion:
-    image: saltstack/salt:3002
+    image: saltstack/salt:3003
     container_name: down-minion
     environment:
       SALT_MINION_CONFIG: '{"master": "salt-master"}'
     hostname: down-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
+  # this simulates a minion which returns an error
+  # specificly a pillar render error
   bad-minion:
     image: saltstack/salt:3002
     container_name: bad-minion
     environment:
       SALT_MINION_CONFIG: '{"master": "salt-master"}'
     hostname: bad-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
   alpine3.12-minion:
     image: alpine-saltstack:3.12
@@ -81,8 +84,8 @@ services:
       dockerfile: dockerfiles/Dockerfile-alpine3.12
     container_name: alpine3.12-minion
     hostname: alpine3.12-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
   ubuntu2004-minion:
     image: ubuntu-saltstack:20.04
@@ -91,8 +94,8 @@ services:
       dockerfile: dockerfiles/Dockerfile-ubuntu2004
     container_name: ubuntu2004-minion
     hostname: ubuntu2004-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
   centos7-minion:
     image: centos-saltstack:7
@@ -101,8 +104,8 @@ services:
       dockerfile: dockerfiles/Dockerfile-centos7
     container_name: centos7-minion
     hostname: centos7-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
   centos8-minion:
     image: centos-saltstack:8
@@ -111,8 +114,8 @@ services:
       dockerfile: dockerfiles/Dockerfile-centos8
     container_name: centos8-minion
     hostname: centos8-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
 
   opensuseleap15.3-minion:
     image: opensuseleap-saltstack:15.3
@@ -121,5 +124,5 @@ services:
       dockerfile: dockerfiles/Dockerfile-opensuseleap15.3
     container_name: opensuseleap15.3-minion
     hostname: opensuseleap15.3-minion
-    links:
-      - salt-master:salt-master
+    depends_on:
+      - salt-master
