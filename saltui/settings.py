@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'pby)@shnci#e-m!4na$3u@1&j055rv(#wa&8#13wb_!t&af!2_')
+SECRET_KEY = os.getenv('SALTUI_SECRET_KEY', 'pby)@shnci#e-m!4na$3u@1&j055rv(#wa&8#13wb_!t&af!2_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -69,9 +69,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'saltui',
-        'USER': os.getenv('DB_USER', ''),
-        'PASSWORD': os.getenv('DB_PASS', ''),
-        'HOST': os.getenv('DB_HOST', ''),
+        'USER': os.getenv('SALTUI_DB_USER', ''),
+        'PASSWORD': os.getenv('SALTUI_DB_PASS', ''),
+        'HOST': os.getenv('SALTUI_DB_HOST', ''),
         'PORT': '5432',
         'CONN_MAX_AGE': 120
     }
@@ -124,12 +124,12 @@ STATICFILES_DIRS = [
 
 # application specific settings
 # options: api or local
-SALT_CLIENT = os.getenv('SALT_CLIENT', 'api')
+SALT_CLIENT = os.getenv('SALTUI_SALT_CLIENT', 'api')
 
-SALT_API_HOST = os.getenv('SALT_API_HOST', 'https://localhost:8000')
-SALT_API_USER = os.getenv('SALT_API_USER', 'salt')
-SALT_API_PASS = os.getenv('SALT_API_PASS', 'testing123')
-SALT_API_EAUTH = os.getenv('SALT_API_EAUTH', 'sharedsecret')
+SALT_API_HOST = os.getenv('SALTUI_SALT_API_HOST', 'https://localhost:8000')
+SALT_API_USER = os.getenv('SALTUI_SALT_API_USER', 'salt')
+SALT_API_PASS = os.getenv('SALTUI_SALT_API_PASS', 'testing123')
+SALT_API_EAUTH = os.getenv('SALTUI_SALT_API_EAUTH', 'sharedsecret')
 
-PURGE_OLD_RECORDS = os.getenv('PURGE_OLD_RECORDS', True)
-PURGE_OLDER_THAN = os.getenv('PURGE_OLDER_THAN', 5) # 5 days
+PURGE_OLD_RECORDS = os.getenv('SALTUI_PURGE_OLD_RECORDS', True)
+PURGE_OLDER_THAN = os.getenv('SALTUI_PURGE_OLDER_THAN', 5) # 5 days
