@@ -22,6 +22,7 @@ services:
       - $PWD:/opt/saltui
     ports:
       - 8080:8080
+      - 8443:8443
     command: ['wait-for', 'postgres:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8080']
     restart: unless-stopped
     depends_on:
