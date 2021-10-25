@@ -106,36 +106,6 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = '/accounts/login/'
 # LOGIN_REDIRECT_URL = '/'
 
-OIDC_RP_SIGN_ALGO = os.getenv('OIDC_RP_SIGN_ALGO', 'HS256')
-OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_OP_JWKS_ENDPOINT')
-OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('OIDC_OP_AUTHORIZATION_ENDPOINT')
-OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_OP_TOKEN_ENDPOINT')
-OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_OP_USER_ENDPOINT')
-OIDC_RP_SCOPES = os.getenv('OIDC_RP_SCOPE', 'openid email')
-OIDC_RP_CLIENT_ID = os.getenv('OIDC_RP_CLIENT_ID', '')
-OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_RP_CLIENT_SECRET', '')
-LOGIN_REDIRECT_URL = os.getenv('APP_BASE_DOMAIN', '/')
-# OIDC_REDIRECT_URL = f"{BASE_URL}/admin/oidc/callback/"
-# OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"redirect_uri": OIDC_REDIRECT_URL}
-# LOGOUT_REDIRECT_URL = "<URL path to redirect to after logout>"
-
-# OKTA_AUTH = {
-#     'ORG_URL': 'https://' + os.getenv('OKTA_DOMAIN', '') + '/',
-#     'ISSUER': 'https://' + os.getenv('OKTA_DOMAIN', '') + '/oauth2/default',
-#     'CLIENT_ID': os.getenv('OKTA_CLIENT_ID', ''),
-#     'CLIENT_SECRET': os.getenv('OKTA_CLIENT_SECRET', ''),
-#     'SCOPES': 'openid profile email groups offline_access', # this is the default and can be omitted
-#     'REDIRECT_URI': os.getenv('APP_BASE_DOMAIN', 'http://localhost:8080') + '/accounts/oauth2/callback/',
-#     'LOGIN_REDIRECT_URL': os.getenv('APP_BASE_DOMAIN', '/'),
-#     'CACHE_PREFIX': 'okta', # default
-#     'CACHE_ALIAS': 'default', # default
-#     'PUBLIC_NAMED_URLS': (), # list or tuple of URL names that should be accessible without tokens
-#     'PUBLIC_URLS': (), # list or tuple of URL regular expressions that should be accessible without tokens
-#     'MANAGE_GROUPS': False, # if true the authentication backend will manage django groups for you; include groups in scopes if true
-#     'STAFF_GROUP': 'admin', # members of this group will have the django is_staff user flags set
-#     'SUPERUSER_GROUP': 'admin', # members of this group will have the django is_superuser user flags set.
-# }
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -170,3 +140,26 @@ SALT_API_EAUTH = os.getenv('SALTUI_SALT_API_EAUTH', 'sharedsecret')
 
 PURGE_OLD_RECORDS = os.getenv('SALTUI_PURGE_OLD_RECORDS', True)
 PURGE_OLDER_THAN = os.getenv('SALTUI_PURGE_OLDER_THAN', 5) # 5 days
+
+# Okta
+OKTA_DOMAIN = os.environ.get("OKTA_DOMAIN")
+OKTA_TOKEN = os.environ.get("OKTA_TOKEN")
+
+# User information
+USER_CRM_ID = None
+USER_EMAIL = None
+
+# Okta Admin
+OKTA_ADMIN_DOMAIN = OKTA_DOMAIN
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_OP_JWKS_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/keys"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/authorize"
+OIDC_OP_TOKEN_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/token"
+OIDC_OP_USER_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/userinfo"
+OIDC_RP_SCOPES = "openid profile email groups"
+OIDC_RP_CLIENT_ID = os.environ.get("OKTA_ADMIN_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = os.environ.get("OKTA_ADMIN_CLIENT_SECRET")
+OIDC_VERIFY_SSL = True
+LOGIN_REDIRECT_URL = "localhost:8080/admin/"
+OIDC_REDIRECT_URL = "localhost:8080/admin/oidc/callback/"
+OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"redirect_uri": OIDC_REDIRECT_URL}
