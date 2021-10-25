@@ -8,3 +8,6 @@ test-env
 *.swp
 .vscode/
 .DS*
+# ignore .env except example files
+.env.*
+!.env.*.example
