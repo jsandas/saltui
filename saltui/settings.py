@@ -21,12 +21,12 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'mozilla_django_oidc',
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.postgres',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'mozilla_django_oidc',
     'packages.apps.PackagesConfig',
     'system_info.apps.SystemInfoConfig',
     'users.apps.UsersConfig',
@@ -141,25 +141,16 @@ SALT_API_EAUTH = os.getenv('SALTUI_SALT_API_EAUTH', 'sharedsecret')
 PURGE_OLD_RECORDS = os.getenv('SALTUI_PURGE_OLD_RECORDS', True)
 PURGE_OLDER_THAN = os.getenv('SALTUI_PURGE_OLDER_THAN', 5) # 5 days
 
-# Okta
-OKTA_DOMAIN = os.environ.get("OKTA_DOMAIN")
-OKTA_TOKEN = os.environ.get("OKTA_TOKEN")
+OIDC_AUTH_URI = 'http://keycloak:8080/auth/realms/saltui_dev'
+OIDC_CALLBACK_PUBLIC_URI = 'http://localhost:8000/oidc/callback'
 
-# User information
-USER_CRM_ID = None
-USER_EMAIL = None
+LOGIN_REDIRECT_URL = OIDC_CALLBACK_PUBLIC_URI
+LOGOUT_REDIRECT_URL = OIDC_AUTH_URI + '/protocol/openid-connect/logout?redirect_uri=' + OIDC_CALLBACK_PUBLIC_URI
 
-# Okta Admin
-OKTA_ADMIN_DOMAIN = OKTA_DOMAIN
+OIDC_RP_CLIENT_ID = 'saltui_dev'
+OIDC_RP_CLIENT_SECRET = '7a363383-b757-45dd-868e-58696862077f'
+OIDC_OP_AUTHORIZATION_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/userinfo"
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_OP_JWKS_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/keys"
-OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/authorize"
-OIDC_OP_TOKEN_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/token"
-OIDC_OP_USER_ENDPOINT = f"{OKTA_ADMIN_DOMAIN}/oauth2/v1/userinfo"
-OIDC_RP_SCOPES = "openid profile email groups"
-OIDC_RP_CLIENT_ID = os.environ.get("OKTA_ADMIN_CLIENT_ID")
-OIDC_RP_CLIENT_SECRET = os.environ.get("OKTA_ADMIN_CLIENT_SECRET")
-OIDC_VERIFY_SSL = True
-LOGIN_REDIRECT_URL = "localhost:8080/admin/"
-OIDC_REDIRECT_URL = "localhost:8080/admin/oidc/callback/"
-OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"redirect_uri": OIDC_REDIRECT_URL}
+OIDC_OP_JWKS_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/certs"

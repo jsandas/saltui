@@ -34,6 +34,21 @@
     </div>
   </div> 
   <a href="/system_info">System Info</a>
+  <div style="float:right;", class="dropdown">
+    {% if user.is_authenticated %}
+    <button class="dropbtn">{{ user.email }}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content" id="dropdownMenu">
+      <form action="{% url 'oidc_logout' %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="Logout">
+      </form>
+    </div>
+     {% else %}
+     <a href="{% url 'oidc_authentication_init' %}">Login</a>
+     {% endif %}
+  </div>
 </div>
 {% block content %}{% endblock %}
 </body>
