@@ -2,17 +2,19 @@ FROM python:3-alpine
 
 WORKDIR /opt/saltui
 
-ADD ./ /opt/saltui
+COPY ./ /opt/saltui
 
-RUN apk add --no-cache --virtual .build-deps build-base libffi-dev rust cargo openssl-dev postgresql-dev \
+# build dependencies
+RUN apk add --no-cache --virtual .build-deps build-base libffi-dev postgresql-dev \
     && pip install --no-cache-dir -r requirements.txt \
-    && apk del .build-deps \
-    && apk add --no-cache libpq \
-    && wget -O /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
+    && apk del .build-deps
+
+# install required packages/scripts
+RUN apk add --no-cache libpq openssl
+RUN wget -O /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
     && chmod +x /usr/local/bin/wait-for
 
-RUN apk add --no-cache openssl \
-    && openssl req -x509 -nodes -days 365 \
+RUN openssl req -x509 -nodes -days 365 \
     -subj "/C=CA/ST=QC/O=Company, Inc./CN=mydomain.com" \
     -addext "subjectAltName=DNS:mydomain.com" \
     -newkey rsa:2048 -keyout /etc/ssl/private/selfsigned.key \
