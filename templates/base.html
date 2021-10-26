@@ -45,11 +45,18 @@
           <input type="submit" value="Logout">
       </form>
     </div>
-     {% else %}
+    {% else %}
      <a href="{% url 'oidc_authentication_init' %}">Login</a>
-     {% endif %}
+    {% endif %}
   </div>
 </div>
+{% if user.is_authenticated %}
 {% block content %}{% endblock %}
+{% else %}
+<div class="subHeaders">
+  You are not currently authorized to view this page.</br>
+  Please login.</br>
+</div>
+{% endif %}
 </body>
 </html>
