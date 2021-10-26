@@ -21,7 +21,7 @@ services:
       - backend
       - salt
     ports:
-      - 8080:8080
+      - 8000:8000
       - 8443:8443
     # override command to wait for database to startup
     command: ['wait-for', 'postgres:5432', '-t', '30', '--', '/opt/saltui/start.sh']
@@ -63,8 +63,7 @@ services:
 
 networks:
   salt:
-    external:
-      name: salt_network
+    name: salt_network
   backend:
     name: database
     driver: bridge
