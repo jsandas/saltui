@@ -45,8 +45,10 @@ services:
     restart: unless-stopped
 
   keycloak:
-    image: quay.io/keycloak/keycloak:15.0.2
+    image: jboss/keycloak
     container_name: keycloak
+    volumes:
+      - $PWD/data_files/saltui_dev-setup.json:/tmp/saltui_dev-setup.json
     ports:
       - 8080:8080
       # - 9443:8443
@@ -54,6 +56,7 @@ services:
       DB_VENDOR: h2
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/saltui_dev-setup.json
 
   # salt-master:
   #   image: saltstack/salt:3003
