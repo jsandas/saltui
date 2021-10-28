@@ -2,7 +2,6 @@ data_files
 srv
 Dockerfile
 docker-compose*.yml
-test-env
 .git*
 *.pyc
 *.swp
@@ -10,4 +9,5 @@ test-env
 .DS*
 # ignore .env except example files
 .env.*
+.env.postgres
 !.env.*.example
