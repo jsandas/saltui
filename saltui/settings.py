@@ -21,7 +21,6 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'mozilla_django_oidc',
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.postgres',
@@ -40,7 +39,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 ROOT_URLCONF = 'saltui.urls'
@@ -99,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -141,16 +138,18 @@ SALT_API_EAUTH = os.getenv('SALTUI_SALT_API_EAUTH', 'sharedsecret')
 PURGE_OLD_RECORDS = os.getenv('SALTUI_PURGE_OLD_RECORDS', True)
 PURGE_OLDER_THAN = os.getenv('SALTUI_PURGE_OLDER_THAN', 5) # 5 days
 
-OIDC_AUTH_URI = 'http://keycloak:8080/auth/realms/saltui_dev'
-OIDC_CALLBACK_PUBLIC_URI = 'http://localhost:8000/oidc/callback'
+if os.getenv('SALTUI_OIDC_ENABLED', False):
+    INSTALLED_APPS.insert(3, 'mozilla_django_oidc')
+    MIDDLEWARE.append('mozilla_django_oidc.middleware.SessionRefresh')
+    AUTHENTICATION_BACKENDS.append('mozilla_django_oidc.auth.OIDCAuthenticationBackend')
 
-LOGIN_REDIRECT_URL = OIDC_CALLBACK_PUBLIC_URI
-LOGOUT_REDIRECT_URL = OIDC_AUTH_URI + '/protocol/openid-connect/logout?redirect_uri=' + OIDC_CALLBACK_PUBLIC_URI
-
-OIDC_RP_CLIENT_ID = 'saltui_dev'
-OIDC_RP_CLIENT_SECRET = '7a363383-b757-45dd-868e-58696862077f'
-OIDC_OP_AUTHORIZATION_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/auth"
-OIDC_OP_TOKEN_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/token"
-OIDC_OP_USER_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/userinfo"
-OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_OP_JWKS_ENDPOINT = OIDC_AUTH_URI + "/protocol/openid-connect/certs"
+    OIDC_CALLBACK_PUBLIC_URI = os.getenv('SALTUI_OIDC_CALLBACK_PUBLIC_URI', 'http://localhost:8000/oidc/callback')
+    OIDC_RP_CLIENT_ID = os.getenv('SALTUI_OIDC_RP_CLIENT_ID')
+    OIDC_RP_CLIENT_SECRET = os.getenv('SALTUI_OIDC_RP_CLIENT_SECRET')
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('SALTUI_OIDC_OP_AUTHORIZATION_ENDPOINT')
+    OIDC_OP_TOKEN_ENDPOINT = os.getenv('SALTUI_OIDC_OP_TOKEN_ENDPOINT')
+    OIDC_OP_USER_ENDPOINT = os.getenv('SALTUI_OIDC_OP_USER_ENDPOINT')
+    OIDC_RP_SIGN_ALGO = os.getenv('SALTUI_OIDC_RP_SIGN_ALGO', 'RS256')
+    OIDC_OP_JWKS_ENDPOINT = os.getenv('SALTUI_OIDC_OP_JWKS_ENDPOINT')
+    LOGIN_REDIRECT_URL = OIDC_CALLBACK_PUBLIC_URI
+    LOGOUT_REDIRECT_URL = os.getenv('SALTUI_LOGOUT_REDIRECT_URL') + OIDC_CALLBACK_PUBLIC_URI
