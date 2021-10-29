@@ -1,8 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/static/css/navigation.css">
+<link rel="stylesheet" href="/static/css/tables.css">
+<script src="/static/js/saltui.js"></script>
 
-{% block header %}{% endblock %}
-{% block content %}
+</head>
     <div id="content-container" class="container p-none">
         <div class="lgn-container col-lg-8">
             <form id="login-form" method="post">
@@ -32,4 +38,7 @@
             </form>
         </div>
     </div>
-{% endblock content %}
+    <div>
+        User OIDC Provider</br>
+        <a href="{% url 'oidc_authentication_init' %}">Login</a>
+    </div>
