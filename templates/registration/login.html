@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="/static/css/navigation.css">
-<link rel="stylesheet" href="/static/css/tables.css">
-<script src="/static/js/saltui.js"></script>
+{% include "header.html" %}
 
-</head>
+<body>
     <div id="content-container" class="container p-none">
         <div class="lgn-container col-lg-8">
             <form id="login-form" method="post">
@@ -33,12 +25,15 @@
                 {% endif %}
 
                 <input type="submit" value="Login" 
-                       class="btn btn-primary pull-right" />
+                       class="btn btn-primary" />
                 <input type="hidden" name="next" value="{{ next }}" />
             </form>
         </div>
     </div>
     <div>
-        User OIDC Provider</br>
-        <a href="{% url 'oidc_authentication_init' %}">Login</a>
+        </br>
+        <a href="{% url 'oidc_authentication_init' %}">Login with SSO</a>
     </div>
+</body>
+
+{% include "footer.html" %}
