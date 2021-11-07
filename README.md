@@ -7,7 +7,7 @@ with or without docker.
 Otherwise it must be run locally on the salt master without docker.
 
 
-##Run app:
+**Run app:**
 
 Docker:
 ```bash
@@ -28,7 +28,18 @@ source .venv/bin/activate
 ./start.sh
 ```
 
-# Dev
+**Default superuser login credentials:**
+user: admin
+password: password
+
+Note:: default superuser can be changed with env vars:
+```
+DJANGO_SUPERUSER_EMAIL=name@test.com
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_PASSWORD=secretpassword
+```
+
+##Dev
 Use the dev-env.sh script to bring up the dev environment.  Currently db migrations
 have to be run manually after the containers are up.
 
@@ -42,24 +53,24 @@ Use cli in saltui container:
 ./dev-env cmd
 ```
 
+Run database migration (Note: this is done automatically on startup):
+```bash
+python manage.py migrate
+```
+
+Create superuser (Note: this is done automatically on startup):
+```bash
+python manage.py createsuperuser --noinput
+```
+
 Stop:
 ```bash
 ./dev-env stop
 ```
 
-**Saltui commands:**
-Run database migration:
-```bash
-python manage.py migrate
-```
-
-Create superuser:
-```bash
-python manage.py createsuperuser
-```
-
-##Collecting data from:
-Data is collected running the following commands.  These can be ran manually or using a scheduler such as cron or jenkins. 
+##Saltui commands:
+**Collecting data from:**
+Data is collected running the following commands.  These can be ran manually or using a scheduler such as cron, jenkins, or ophelia. 
 Note:: retrieving users information requires the `userinfo.py` module from the /srv/salt/_modules folder to be added to the salt file root (/srv/salt/_modules)
 
 ```bash
