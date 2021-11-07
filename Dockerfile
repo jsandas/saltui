@@ -2,13 +2,16 @@ FROM python:3-alpine
 
 WORKDIR /opt/saltui
 
-ADD ./ /opt/saltui
+COPY ./ /opt/saltui
 
-RUN apk add --no-cache --virtual .build-deps build-base linux-headers postgresql-dev \
+# build dependencies
+RUN apk add --no-cache --virtual .build-deps build-base libffi-dev postgresql-dev \
     && pip install --no-cache-dir -r requirements.txt \
-    && apk del .build-deps \
-    && apk add --no-cache libpq \
-    && wget -O /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
+    && apk del .build-deps
+
+# install required packages/scripts
+RUN apk add --no-cache libpq
+RUN wget -O /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
     && chmod +x /usr/local/bin/wait-for
 
 RUN adduser -u 978 -h /opt/saltui -g 'python app user' -s /sbin/nologin -D python

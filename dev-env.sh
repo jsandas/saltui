@@ -25,6 +25,10 @@ start () {
     docker exec salt-master sh -c 'salt \* saltutil.sync_all' > /dev/null 2>&1
 
     docker stop down-minion
+
+    docker exec saltui sh -c 'wait-for postgres:5432 -t 30 -- python manage.py migrate'
+
+    docker exec saltui sh -c 'python manage.py createsuperuser --noinput' > /dev/null 2>&1
 }	
 
 stop () {	

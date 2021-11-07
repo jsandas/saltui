@@ -8,33 +8,24 @@ services:
     container_name: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
     env_file: .env.saltui
-    # environment:
-    #   SALTUI_ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
-    #   SALTUI_APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
-    #   SALTUI_DB_HOST: ${SALTUI_DB_HOST}
-    #   SALTUI_DB_PASS: ${SALTUI_DB_PASS}
-    #   SALTUI_DB_USER: ${SALTUI_DB_USER}
-    #   SALTUI_SALT_API_HOST: ${SALTUI_SALT_API_HOST}
-    #   SALTUI_SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
-    #   SALTUI_SALT_API_PASS: ${SALTUI_SALT_API_PASS}
-    #   SALTUI_SALT_API_USER: ${SALTUI_SALT_API_USER}
+    environment:
+      DJANGO_SUPERUSER_EMAIL: ${SALTUI_SUPERUSER_EMAIL:-admin@saltui.local}
+      DJANGO_SUPERUSER_USERNAME: ${SALTUI_SUPERUSER_USERNAME:-admin}
+      DJANGO_SUPERUSER_PASSWORD: ${SALTUI_SUPERUSER_USERNAME:-password}
     volumes:
       - $PWD:/opt/saltui
     ports:
-      - 8080:8080
-    command: ['wait-for', 'postgres:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8080']
+      - 8000:8000
+      - 8443:8443
+    command: ['wait-for', 'postgres:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8000']
     restart: unless-stopped
     depends_on:
       - postgres
+      - keycloak
   
   postgres:
     image: postgres:13-alpine
     env_file: .env.postgres
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    #   POSTGRES_APP_USER: ${POSTGRES_APP_USER}
-    #   POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
     volumes: 
       - $PWD/data_files/data:/var/lib/postgresql/data
       - $PWD/data_files/db-init-scripts:/docker-entrypoint-initdb.d
@@ -42,13 +33,27 @@ services:
       - 5432:5432
     restart: unless-stopped
 
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    volumes:
+      - $PWD/data_files/saltui_dev-setup.json:/tmp/saltui_dev-setup.json
+    ports:
+      - 8080:8080
+      # - 9443:8443
+    environment:
+      DB_VENDOR: h2
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/saltui_dev-setup.json
+
   salt-master:
     image: saltstack/salt:3003
     container_name: salt-master
     ports:
       - "4505:4505"
       - "4506:4506"
-      - "8000:8000"
+      # - "8000:8000"
     environment: 
       SALT_MASTER_CONFIG: '{"auto_accept": true, "log_level": "info"}'
       SALT_SHARED_SECRET: 'testing123'

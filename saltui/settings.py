@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SALTUI_SECRET_KEY', 'pby)@shnci#e-m!4na$3u@1&j055rv(#wa&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','.digicert.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
@@ -96,8 +96,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/accounts/login'
-#LOGIN_REDIRECT_URL = 'packages/'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '?next='
+LOGOUT_REDIRECT_URL = '/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -119,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # application specific settings
@@ -133,3 +138,19 @@ SALT_API_EAUTH = os.getenv('SALTUI_SALT_API_EAUTH', 'sharedsecret')
 
 PURGE_OLD_RECORDS = os.getenv('SALTUI_PURGE_OLD_RECORDS', True)
 PURGE_OLDER_THAN = os.getenv('SALTUI_PURGE_OLDER_THAN', 5) # 5 days
+
+if os.getenv('SALTUI_OIDC_ENABLED', False):
+    INSTALLED_APPS.insert(3, 'mozilla_django_oidc')
+    MIDDLEWARE.append('mozilla_django_oidc.middleware.SessionRefresh')
+    AUTHENTICATION_BACKENDS.append('mozilla_django_oidc.auth.OIDCAuthenticationBackend')
+
+    OIDC_CALLBACK_PUBLIC_URI = os.getenv('SALTUI_OIDC_CALLBACK_PUBLIC_URI', 'http://localhost:8000/oidc/callback')
+    OIDC_RP_CLIENT_ID = os.getenv('SALTUI_OIDC_RP_CLIENT_ID')
+    OIDC_RP_CLIENT_SECRET = os.getenv('SALTUI_OIDC_RP_CLIENT_SECRET')
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('SALTUI_OIDC_OP_AUTHORIZATION_ENDPOINT')
+    OIDC_OP_TOKEN_ENDPOINT = os.getenv('SALTUI_OIDC_OP_TOKEN_ENDPOINT')
+    OIDC_OP_USER_ENDPOINT = os.getenv('SALTUI_OIDC_OP_USER_ENDPOINT')
+    OIDC_RP_SIGN_ALGO = os.getenv('SALTUI_OIDC_RP_SIGN_ALGO', 'RS256')
+    OIDC_OP_JWKS_ENDPOINT = os.getenv('SALTUI_OIDC_OP_JWKS_ENDPOINT')
+    LOGIN_REDIRECT_URL = OIDC_CALLBACK_PUBLIC_URI
+    LOGOUT_REDIRECT_URL = os.getenv('SALTUI_LOGOUT_REDIRECT_URL') + OIDC_CALLBACK_PUBLIC_URI

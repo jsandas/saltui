@@ -1,8 +1,6 @@
-{% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+{% include "header.html" %}
 
-{% block header %}{% endblock %}
-{% block content %}
+<body>
     <div id="content-container" class="container p-none">
         <div class="lgn-container col-lg-8">
             <form id="login-form" method="post">
@@ -27,9 +25,15 @@
                 {% endif %}
 
                 <input type="submit" value="Login" 
-                       class="btn btn-primary pull-right" />
+                       class="btn btn-primary" />
                 <input type="hidden" name="next" value="{{ next }}" />
             </form>
         </div>
     </div>
-{% endblock content %}
+    <div>
+        </br>
+        <a href="{% url 'oidc_authentication_init' %}">Login with SSO</a>
+    </div>
+</body>
+
+{% include "footer.html" %}

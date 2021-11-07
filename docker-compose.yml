@@ -7,21 +7,16 @@ services:
     image: saltui
     # DB USER and PASSWORD set in data_files/db-init-scripts/init-user-db.sh
     env_file: .env.saltui
-    # environment:
-    #   SALTUI_ALLOWED_HOSTS: ${SALTUI_ALLOWED_HOSTS}
-    #   SALTUI_APP_BASE_DOMAIN: ${SALTUI_APP_BASE_DOMAIN}
-    #   SALTUI_DB_HOST: ${SALTUI_DB_HOST}
-    #   SALTUI_DB_PASS: ${SALTUI_DB_PASS}
-    #   SALTUI_DB_USER: ${SALTUI_DB_USER}
-    #   SALTUI_SALT_API_HOST: ${SALTUI_SALT_API_HOST}
-    #   SALTUI_SALT_API_EAUTH: ${SALTUI_SALT_API_EAUTH}
-    #   SALTUI_SALT_API_PASS: ${SALTUI_SALT_API_PASS}
-    #   SALTUI_SALT_API_USER: ${SALTUI_SALT_API_USER}
+    environment:
+      DJANGO_SUPERUSER_EMAIL: ${SALTUI_SUPERUSER_EMAIL:-admin@saltui.local}
+      DJANGO_SUPERUSER_USERNAME: ${SALTUI_SUPERUSER_USERNAME:-admin}
+      DJANGO_SUPERUSER_PASSWORD: ${SALTUI_SUPERUSER_USERNAME:-password}
     networks:
       - backend
       - salt
     ports:
-      - 8080:8080
+      - 8000:8000
+      - 8443:8443
     # override command to wait for database to startup
     command: ['wait-for', 'postgres:5432', '-t', '30', '--', '/opt/saltui/start.sh']
     restart: unless-stopped
@@ -36,11 +31,6 @@ services:
   postgres:
     image: postgres:13-alpine
     env_file: .env.postgres
-    # environment:
-    #   POSTGRES_DB: ${POSTGRES_DB}
-    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    #   POSTGRES_APP_USER: ${POSTGRES_APP_USER}
-    #   POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
     networks:
       - backend
     volumes: 
@@ -62,8 +52,7 @@ services:
 
 networks:
   salt:
-    external:
-      name: salt_network
+    name: salt_network
   backend:
     name: database
     driver: bridge
