@@ -1,8 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from packages.models import Host_Packages, Package_Hosts
 
 
-class Summary(TemplateView):
+class Summary(LoginRequiredMixin, TemplateView):
     template_name = 'packages/summary.html'
     title = 'Summary'
 
@@ -18,7 +19,7 @@ class Summary(TemplateView):
         return context
 
 
-class Packages(TemplateView):
+class Packages(LoginRequiredMixin, TemplateView):
     template_name = 'packages/packages.html'
     title = 'Packages'
 
@@ -40,7 +41,7 @@ class Packages(TemplateView):
         return context
 
 
-class Hosts(TemplateView):
+class Hosts(LoginRequiredMixin, TemplateView):
     template_name = 'packages/hosts.html'
     title = 'Hosts'
 

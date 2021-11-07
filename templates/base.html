@@ -34,14 +34,7 @@
             {% endif %}
         </div>
     </div>
-{% if user.is_authenticated %}
-    {% block content %}{% endblock %}
-{% else %}
-    <div class="subHeaders">
-        You are not currently authorized to view this page.</br>
-        Please login.</br>
-    </div>
-{% endif %}
+{% block content %}{% endblock %}
 </body>
 
 {% include "footer.html" %}
