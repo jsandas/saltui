@@ -15,7 +15,7 @@ services:
     volumes:
       - $PWD:/opt/saltui
     ports:
-      - 8000:8000
+      - 8080:8080
       - 8443:8443
     command: ['wait-for', 'postgres:5432', '-t', '30', '--', 'python', 'manage.py', 'runserver', '0.0.0.0:8000']
     restart: unless-stopped
@@ -112,13 +112,13 @@ services:
     depends_on:
       - salt-master
 
-  centos8-minion:
+  centosstream8-minion:
     image: centos-saltstack:8
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile-centos8
-    container_name: centos8-minion
-    hostname: centos8-minion
+      dockerfile: dockerfiles/Dockerfile-centosstream8
+    container_name: centosstream8-minion
+    hostname: centosstream8-minion
     depends_on:
       - salt-master
 
