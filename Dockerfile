@@ -1,5 +1,7 @@
 FROM python:3-alpine
 
+ENV MAKEFLAGS="-j$(nproc)"
+
 WORKDIR /opt/saltui
 
 COPY ./ /opt/saltui
