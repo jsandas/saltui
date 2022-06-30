@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SALTUI_SECRET_KEY', 'pby)@shnci#e-m!4na$3u@1&j055rv(#wa&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = os.getenv('SALTUI_ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
