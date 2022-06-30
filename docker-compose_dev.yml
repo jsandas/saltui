@@ -39,7 +39,7 @@ services:
     volumes:
       - $PWD/data_files/saltui_dev-setup.json:/tmp/saltui_dev-setup.json
     ports:
-      - 8080:8080
+      - 8000:8080
       # - 9443:8443
     environment:
       DB_VENDOR: h2
@@ -48,7 +48,7 @@ services:
       KEYCLOAK_IMPORT: /tmp/saltui_dev-setup.json
 
   salt-master:
-    image: saltstack/salt:3003
+    image: saltstack/salt:3004
     container_name: salt-master
     ports:
       - "4505:4505"
@@ -63,7 +63,7 @@ services:
 
   # this is to simulate an unresponsive minion
   down-minion:
-    image: saltstack/salt:3003
+    image: saltstack/salt:3004
     container_name: down-minion
     environment:
       SALT_MINION_CONFIG: '{"master": "salt-master"}'
@@ -74,7 +74,7 @@ services:
   # this simulates a minion which returns an error
   # specificly a pillar render error
   bad-minion:
-    image: saltstack/salt:3002
+    image: saltstack/salt:3004
     container_name: bad-minion
     environment:
       SALT_MINION_CONFIG: '{"master": "salt-master"}'
