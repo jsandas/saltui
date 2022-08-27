@@ -1,0 +1,39 @@
+name: build support images
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "13 * * * 0"
+
+jobs:
+  build_support_images:
+    runs-on: ubuntu-latest
+    name: Build Support Images
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build alpine3.12-minion image
+        run: |
+          docker build --tag ghcr.io/jsandas/alpine3.12-minion dockerfiles/Dockerfile-alpine3.12
+
+      - name: Build centos7-minion image
+        run: |
+          docker build --tag ghcr.io/jsandas/Dockerfile-centos7 dockerfiles/Dockerfile-centos7
+
+      - name: Build opensuseleap15.3-minion image
+        run: |
+          docker build --tag ghcr.io/jsandas/opensuseleap15.3-minion dockerfiles/Dockerfile-opensuseleap15.3
+
+      - name: Build ubuntu2004-minion image
+        run: |
+          docker build --tag ghcr.io/jsandas/ubuntu2004-minion dockerfiles/Dockerfile-ubuntu2004
+
+      - name: Push images
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io/jsandas -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/jsandas/alpine3.12-minion
+          docker push ghcr.io/jsandas/centos7-minion
+          docker push ghcr.io/jsandas/opensuseleap15.3-minion
+          docker push ghcr.io/jsandas/ubuntu2004-minion
+          docker logout ghcr.io/jsandas
