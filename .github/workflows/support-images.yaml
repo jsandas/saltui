@@ -19,7 +19,7 @@ jobs:
 
       - name: Build centos7-minion image
         run: |
-          docker build --tag ghcr.io/jsandas/Dockerfile-centos7 -f dockerfiles/Dockerfile-centos7 .
+          docker build --tag ghcr.io/jsandas/centos7-minion-f dockerfiles/Dockerfile-centos7 .
 
       - name: Build opensuseleap15.3-minion image
         run: |
