@@ -11,9 +11,6 @@ services:
       DJANGO_SUPERUSER_EMAIL: ${SALTUI_SUPERUSER_EMAIL:-admin@saltui.local}
       DJANGO_SUPERUSER_USERNAME: ${SALTUI_SUPERUSER_USERNAME:-admin}
       DJANGO_SUPERUSER_PASSWORD: ${SALTUI_SUPERUSER_USERNAME:-password}
-    networks:
-      - backend
-      - salt
     ports:
       - 8080:8080
       - 8443:8443
@@ -31,8 +28,6 @@ services:
   postgres:
     image: postgres:13-alpine
     env_file: .env.postgres
-    networks:
-      - backend
     volumes: 
       - $PWD/data_files/data:/var/lib/postgresql/data
       - $PWD/data_files/db-init-scripts:/docker-entrypoint-initdb.d
@@ -45,14 +40,5 @@ services:
     depends_on:
       - saltui
     command: daemon --docker
-    networks:
-      - backend
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-networks:
-  salt:
-    name: salt_network
-  backend:
-    name: database
-    driver: bridge
