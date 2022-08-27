@@ -15,25 +15,25 @@ jobs:
 
       - name: Build alpine3.12-minion image
         run: |
-          docker build --tag ghcr.io/jsandas/alpine3.12-minion -f dockerfiles/Dockerfile-alpine3.12 .
+          docker build --tag ghcr.io/jsandas/alpine-saltstack:3.12 -f dockerfiles/Dockerfile-alpine3.12 .
 
       - name: Build centos7-minion image
         run: |
-          docker build --tag ghcr.io/jsandas/centos7-minion -f dockerfiles/Dockerfile-centos7 .
+          docker build --tag ghcr.io/jsandas/centos-saltstack:7 -f dockerfiles/Dockerfile-centos7 .
 
       - name: Build opensuseleap15.3-minion image
         run: |
-          docker build --tag ghcr.io/jsandas/opensuseleap15.3-minion -f dockerfiles/Dockerfile-opensuseleap15.3 .
+          docker build --tag ghcr.io/jsandas/opensuseleap-saltstack:15.3 -f dockerfiles/Dockerfile-opensuseleap15.3 .
 
       - name: Build ubuntu2004-minion image
         run: |
-          docker build --tag ghcr.io/jsandas/ubuntu2004-minion -f dockerfiles/Dockerfile-ubuntu2004 .
+          docker build --tag ghcr.io/jsandas/ubuntu-saltstack:20.04 -f dockerfiles/Dockerfile-ubuntu2004 .
 
       - name: Push images
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io/jsandas -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/jsandas/alpine3.12-minion
-          docker push ghcr.io/jsandas/centos7-minion
-          docker push ghcr.io/jsandas/opensuseleap15.3-minion
-          docker push ghcr.io/jsandas/ubuntu2004-minion
+          docker push ghcr.io/jsandas/alpine-saltstack:3.12
+          docker push ghcr.io/jsandas/centos-saltstack:7
+          docker push ghcr.io/jsandas/opensuseleap-saltstack:15.3
+          docker push ghcr.io/jsandas/ubuntu-saltstack:20.04
           docker logout ghcr.io/jsandas
