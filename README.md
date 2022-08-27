@@ -40,32 +40,31 @@ DJANGO_SUPERUSER_PASSWORD=secretpassword
 ```
 
 ##Dev
-Use the dev-env.sh script to bring up the dev environment.  Currently db migrations
-have to be run manually after the containers are up.
+Use make to run dev environment
 
-Start:
+Build dev environment:
 ```bash
-./dev-env start
+make build-dev
+```
+
+Start dev environment:
+```bash
+make run-dev
 ```
 
 Use cli in saltui container:
 ```bash
-./dev-env cmd
+make saltui-cmd
 ```
 
-Run database migration (Note: this is done automatically on startup):
+Stop dev environment:
 ```bash
-python manage.py migrate
+make stop-dev
 ```
 
-Create superuser (Note: this is done automatically on startup):
+Create clean dev environment:
 ```bash
-python manage.py createsuperuser --noinput
-```
-
-Stop:
-```bash
-./dev-env stop
+make fresh
 ```
 
 ##Saltui commands:
