@@ -83,40 +83,28 @@ services:
       - salt-master
 
   alpine3.12-minion:
-    image: alpine-saltstack:3.12
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-alpine3.12
+    image: ghcr.io/jsandas/alpine-saltstack:3.12
     container_name: alpine3.12-minion
     hostname: alpine3.12-minion
     depends_on:
       - salt-master
 
   ubuntu2004-minion:
-    image: ubuntu-saltstack:20.04
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-ubuntu2004
+    image: ghcr.io/jsandas/ubuntu-saltstack:20.04
     container_name: ubuntu2004-minion
     hostname: ubuntu2004-minion
     depends_on:
       - salt-master
 
   centos7-minion:
-    image: centos-saltstack:7
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-centos7
+    image: ghcr.io/jsandas/centos-saltstack:7
     container_name: centos7-minion
     hostname: centos7-minion
     depends_on:
       - salt-master
 
   opensuseleap15.3-minion:
-    image: opensuseleap-saltstack:15.3
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-opensuseleap15.3
+    image: ghcr.io/jsandas/opensuseleap-saltstack:15.3
     container_name: opensuseleap15.3-minion
     hostname: opensuseleap15.3-minion
     depends_on:
