@@ -1,14 +1,12 @@
 FROM python:3-alpine
 
-ENV MAKEFLAGS="-j$(nproc)"
-
 WORKDIR /opt/saltui
 
 COPY ./ /opt/saltui
 
 # build dependencies
 RUN apk add --no-cache --virtual .build-deps build-base libffi-dev postgresql-dev \
-    && pip install --no-cache-dir -r requirements.txt \
+    && MAKEFLAGS="-j$(nproc)"; pip install --no-cache-dir -r requirements.txt \
     && apk del .build-deps
 
 # install required packages/scripts
