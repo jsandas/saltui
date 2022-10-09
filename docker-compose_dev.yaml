@@ -83,9 +83,9 @@ services:
       - salt-master
 
   alpine3.12-minion:
-    image: ghcr.io/jsandas/alpine-saltstack:3.12
-    container_name: alpine3.12-minion
-    hostname: alpine3.12-minion
+    image: ghcr.io/jsandas/alpine-saltstack:3.16
+    container_name: alpine3.16-minion
+    hostname: alpine3.16-minion
     depends_on:
       - salt-master
 

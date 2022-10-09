@@ -6,8 +6,8 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 
-RUN rpm --import https://repo.saltproject.io/py3/redhat/7/x86_64/latest/SALTSTACK-GPG-KEY.pub \
-    && curl -fsSL https://repo.saltproject.io/py3/redhat/7/x86_64/latest.repo | tee /etc/yum.repos.d/salt.repo
+RUN rpm --import https://repo.saltproject.io/py3/redhat/$(grep VERSION_ID /etc/os-release | cut -d "=" -f 2 | tr -d '"')/x86_64/latest/SALTSTACK-GPG-KEY.pub \
+    && curl -fsSL https://repo.saltproject.io/py3/redhat/$(grep VERSION_ID /etc/os-release | cut -d "=" -f 2 | tr -d '"')/x86_64/latest.repo | tee /etc/yum.repos.d/salt.repo
 
 RUN yum install -y salt-minion
 
