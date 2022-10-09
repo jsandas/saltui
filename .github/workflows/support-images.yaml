@@ -34,6 +34,6 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io/jsandas -u ${{ github.actor }} --password-stdin
           docker push ghcr.io/jsandas/alpine-saltstack:3.12
           docker push ghcr.io/jsandas/centos-saltstack:7
-          docker push ghcr.io/jsandas/opensuseleap-saltstack:15.3
+          docker push ghcr.io/jsandas/opensuseleap-saltstack:15.4
           docker push ghcr.io/jsandas/ubuntu-saltstack:20.04
           docker logout ghcr.io/jsandas
