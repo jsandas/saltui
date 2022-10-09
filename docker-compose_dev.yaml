@@ -104,8 +104,8 @@ services:
       - salt-master
 
   opensuseleap15.3-minion:
-    image: ghcr.io/jsandas/opensuseleap-saltstack:15.3
-    container_name: opensuseleap15.3-minion
-    hostname: opensuseleap15.3-minion
+    image: ghcr.io/jsandas/opensuseleap-saltstack:15.4
+    container_name: opensuseleap15.4-minion
+    hostname: opensuseleap15.4-minion
     depends_on:
       - salt-master

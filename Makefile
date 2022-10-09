@@ -4,6 +4,12 @@ build-dev:
 build-dev-nocache:
 	docker-compose -f docker-compose_dev.yaml build --no-cache
 
+build-dependencies:
+	docker build --tag ghcr.io/jsandas/alpine-saltstack:3.12 -f dockerfiles/Dockerfile-alpine3.12 .
+	docker build --tag ghcr.io/jsandas/centos-saltstack:7 -f dockerfiles/Dockerfile-centos7 .
+	docker build --tag ghcr.io/jsandas/opensuseleap-saltstack:15.4 -f dockerfiles/Dockerfile-opensuseleap15.4 .
+	docker build --tag ghcr.io/jsandas/ubuntu-saltstack:20.04 -f dockerfiles/Dockerfile-ubuntu2004 .
+
 clean: stop-dev
 	rm -rf data_files/data
 
