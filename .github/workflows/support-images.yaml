@@ -13,27 +13,50 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build alpine3.16-minion image
-        run: |
-          docker build --tag ghcr.io/jsandas/alpine-saltstack:3.16 -f dockerfiles/Dockerfile-alpine3.16 .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
 
-      - name: Build centos7-minion image
-        run: |
-          docker build --tag ghcr.io/jsandas/centos-saltstack:7 -f dockerfiles/Dockerfile-centos7 .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Build opensuseleap15.4-minion image
-        run: |
-          docker build --tag ghcr.io/jsandas/opensuseleap-saltstack:15.4 -f dockerfiles/Dockerfile-opensuseleap15.4 .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build ubuntu2004-minion image
-        run: |
-          docker build --tag ghcr.io/jsandas/ubuntu-saltstack:20.04 -f dockerfiles/Dockerfile-ubuntu2004 .
+      - name: Build and push alpine3.16-minion
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: dockerfiles/Dockerfile-alpine3.16
+          tags: ghcr.io/jsandas/alpine-saltstack:3.16
+          platforms: linux/amd64,linux/arm64
+          push: true
 
-      - name: Push images
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io/jsandas -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/jsandas/alpine-saltstack:3.12
-          docker push ghcr.io/jsandas/centos-saltstack:7
-          docker push ghcr.io/jsandas/opensuseleap-saltstack:15.4
-          docker push ghcr.io/jsandas/ubuntu-saltstack:20.04
-          docker logout ghcr.io/jsandas
+      - name: Build and push centos7-minion
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: dockerfiles/Dockerfile-centos7
+          tags: ghcr.io/jsandas/centos-saltstack:7
+          platforms: linux/amd64,linux/arm64
+          push: true
+
+      - name: Build and push opensuseleap15.4-minion
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: dockerfiles/Dockerfile-opensuseleap15.4 
+          tags: ghcr.io/jsandas/opensuseleap-saltstack:15.4
+          platforms: linux/amd64,linux/arm64
+          push: true
+
+      - name: Build and push ubuntu2004-minion
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: dockerfiles/Dockerfile-ubuntu2004
+          tags: ghcr.io/jsandas/ubuntu-saltstack:20.04
+          platforms: linux/amd64,linux/arm64
+          push: true
